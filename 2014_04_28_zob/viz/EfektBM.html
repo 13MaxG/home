@@ -1,0 +1,275 @@
+<html>
+<head >
+  <script src="processing.js"></script>
+  
+</head>
+
+<body style = "width:100%; height:100%;margin:0; padding:0;" onload="res()" onresize="res()">
+
+	<canvas style="display:block; "  id="canvas"    ></canvas>
+
+	<script id="script" type="text/javascript">
+
+	var width = 250, height=250;
+	
+	function point(X, Y, Z)
+	{
+		this.x = X;
+		this.y = Y;
+	}
+		
+	var bezier3 = function(a, b, c, d, t)
+	{
+			
+		var x, y;
+			
+		x = (1-t)*(1-t)*(1-t) * a.x + 3 * (1-t)*(1-t)*t * b.x + 3 *  (1-t) * t*t * c.x + t*t*t*d.x;
+		y = (1-t)*(1-t)*(1-t) * a.y + 3 *(1-t)*(1-t)*t * b.y + 3 *  (1-t) * t *t* c.y + t*t*t*d.y;	
+	
+		
+		return new point(x, y);
+	}
+	
+	function BezierObject(N)
+	{
+		this.data;
+		this.size;
+		
+		var cap = 0;
+		var back = false;
+
+		this.get = function(time)
+		{
+			
+			
+			var interval = 1/ ( this.size / 2 -1);
+			
+			var p = Math.floor( time / interval);
+			
+			var a, b, c, d, e;
+			
+			a = this.data[2*p];
+			b = this.data[2*p + 1];
+			d = this.data[2*p + 2];
+			e = this.data[2*p + 3];
+			var dx = e.x - d.x;
+			var dy = e.y - d.y; 
+			c = new point(d.x - dx, d.y - dy);
+
+			var out = bezier3(a, b, c, d, (time -  p * interval) / interval);
+			
+				
+			delete c;
+			return out;
+		}
+		this.generate= function(s)
+		{
+			delete this.data;
+			
+			this.size = s;
+			this.data = new Array();
+			
+			this.data[0] = new point(0, 0);
+			for(var i = 1; i < this.size; i++)
+			{
+				this.data[i] =  new point( Math.random()  , Math.random());
+				
+			}
+		}
+		this.recalculate = function()
+		{
+			//alert("X");
+			delete this.data[0];
+			delete this.data[1];
+			this.data[0] = this.data[this.size-2];
+			this.data[1] = this.data[this.size-1];
+			for(var i = 2; i < this.size; i++)
+			{
+				this.data[i] =  new point( Math.random() , Math.random());
+				
+			}
+		}
+		
+		this.generate(N);
+	}
+	
+	function BasiaObject (pGon, pBezier, pDt)
+	{
+		this.gon = pGon;
+		this.bezier = pBezier;
+		
+		this.data;
+		
+		this.time = 0;
+		
+		this.dt = pDt;
+		
+		
+		
+		
+		this.generate = function(qGon, qBezier)
+		{
+		
+			this.gon = qGon;
+			this.bezier = qBezier;
+			this.time = 0;
+			
+			
+			delete this.data;
+			this.data = new Array();
+			for(var i = 0; i < this.gon; i++)
+			{
+				this.data[i] = new BezierObject(qBezier);
+				
+			}
+		}
+		
+		this.recalculate = function()
+		{
+			
+			this.time = 0;
+			
+			for(var i = 0; i < this.gon; i++)
+			{
+				this.data[i].recalculate();
+			}
+		}	
+		
+		
+		this.update = function(dt)
+		{
+		
+			var points = new Array();
+			for(var i = 0; i < this.gon; i++)
+			{
+				
+				points[i] = this.data[i].get(this.time);
+			}	
+		
+			this.time += this.dt;
+			if(this.time > 1) this.recalculate();//(this.gon, this.bezier, this.pDt);
+			
+			return points;
+		}
+		
+		
+		
+		this.generate(pGon, pBezier, pDt);
+	}
+
+	
+	var sketch = new Processing.Sketch();
+	
+	sketch.attachFunction = function(processing) {
+	
+		
+	var ips = 1;
+	
+		var rotx = Math.PI/4;
+		var roty = Math.PI/4;
+		
+		var basia = new Array();
+		var ileBasi = 5;
+		for(var i = 0; i < ileBasi; i++)
+			basia[i] = new BasiaObject(5, 8, 0.001 * (i+1));
+		
+		
+		var scale = 0.75;
+
+		var cap = 0;
+		var time = 0;
+		var clear = false;
+		processing.setup = function() {
+			processing.size(width, height);
+			processing.fill(255);
+			processing.stroke(processing.color(44,48,32));
+			processing.background(0);
+			processing.noCursor()
+			processing.frameRate(60);
+		};
+
+		processing.draw = function() {
+		
+			processing.fill(0, 0, 0, Math.round(13*Math.random())+8);
+			processing.rect(-2, -2, processing.width+2, processing.height+2);
+			//	
+			processing.translate(processing.width/2.0, processing.height/2.0);
+			processing.stroke(255);
+			
+			
+
+			
+	
+			
+			
+			processing.noFill();
+			
+
+
+			for(var i = 0; i < ileBasi; i++)
+			{
+				processing.beginShape();
+				var points = basia[i].update();
+				
+				
+				var r, g, b, a;
+				r = points[basia[i].gon -2].x*255;
+				g = points[basia[i].gon -2].y*255;
+				b = points[basia[i].gon -1].x*255;
+				a = points[basia[i].gon -1].y*255;
+				for(var j = 0; j < basia[i].gon -2; j++)
+				{
+					processing.stroke(r, g, b, a);
+					processing.vertex(points[j].x/2 * width - width/4, points[j].y/2 * height +- height/4);
+					
+				}
+			
+				delete points;
+				processing.endShape(processing.CLOSE);
+			}
+					
+			
+			
+			  
+			  
+
+			  
+			 clear = false;
+			 
+		}
+
+		processing.mouseDragged = function() {
+			
+		
+
+	
+			
+					
+		};
+	
+	};
+
+	var canvas = document.getElementById("canvas");
+	// attaching the sketch to the canvas
+	var p =new Processing(canvas, sketch);
+	function res()
+	{
+	
+		var canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d');
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		
+		width = canvas.width;
+		height = canvas.height;
+
+		 // instalacja szkicu
+		if(p !== undefined) p.exit();
+		 	delete p;
+
+		 p = new Processing(canvas, sketch);
+	}
+	</script>
+	
+</body>
+</html>

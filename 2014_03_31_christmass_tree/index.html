@@ -1,0 +1,798 @@
+<html>
+<head >
+  <script src="processing.js"></script>
+  <script src="fit.js"></script>
+   <script src="jquery.js"></script>
+  <meta charset="utf-8">
+  
+</head>
+
+<body style = "width:100%; height:100%;margin:0; padding:0;" onresize="res()">
+
+<embed name="myMusic" loop="false" hidden="true" src="http://1618.pl/home/math_viz/chrismas/Nothing_like_the_Holidays.mp3"></embed>
+<!-- <audio src="">
+<embed name="lostmojo" src="" loop="false" hidden="false" autostart="true"> -->
+</audio>
+		<div id="OK" style="  position: fixed;top: 10px;
+    left: 10px; font-size: 32px;
+    color: white; text-shadow: 0px 0px 13px #FFF; text-align: center;margin: 0 auto;">Wesołych i pogodnych świąt życzy Andrzej<span id="ANDRZEJU">.</span> :)<br />
+   		 <div id="timer" style="font-size: 10px; color:white;">
+    	
+    	</div>
+		</div>
+		
+		
+		<div id="HAHA" style="  position: fixed;top: 10px;
+    left: 10px; font-size: 32px;
+    color: white; text-shadow: 0px 0px 13px #FFF; text-align: center; visibility:hidden;">
+    	
+    	Wow!<br />
+    	<img src="http://memecrunch.com/image/5263471f1605fb2dcf000275.jpg?w=264" /><br />
+    	Choinka taka ładna
+		</div>
+		
+		<div id="matinfy" style="  position: fixed;top: 10px;
+    left: 10px; font-size: 32px;
+    color: white; text-shadow: 0px 0px 13px #FFF; text-align: center; visibility:hidden;">
+    	MAT-INFy<br />
+    	
+    	<img src="http://memecrunch.com/image/4edd0a501861331d64000000.jpg?w=400" />
+		</div>
+		
+		<div id="bub" style="  position: fixed;top: 10px;
+    left: 10px; font-size: 32px;
+    color: white; text-shadow: 0px 0px 13px #FFF; text-align: center; visibility:hidden;">
+    	Bo stłuczesz bańki! <br />
+    	
+    	<img src="http://memecrunch.com/image/4edd34911861333fb6000000.png?w=400" />
+		</div>
+		
+		<div id="she" style="  position: fixed;top: 10px;
+    left: 10px; font-size: 32px;
+    color: white; text-shadow: 0px 0px 13px #FFF; text-align: center; visibility:hidden;">
+    	Kupiłeś już mi prezent? <br />
+    	
+    	<img src="http://memecrunch.com/image/50849457afa96f10ca000001.jpg?w=400" />
+		</div>
+		
+		<div id="cons" style="  position: fixed;top: 10px;
+    left: 10px; font-size: 32px;
+    color: white; text-shadow: 0px 0px 13px #FFF; text-align: center; visibility:hidden;">
+    	A może, tak naprawdę to, Ada rysuje to pisakami? <br />
+    	
+    	<img src="http://memecrunch.com/image/5047393fafa96f67d1000001.jpg?w=400" />
+		</div>
+		
+		<div id="ifs" style="  position: fixed;top: 10px;
+    left: 10px; font-size: 32px;
+    color: white; text-shadow: 0px 0px 13px #FFF; text-align: center; visibility:hidden;">
+    	A co jeżeli powiem Ci, <br />
+    	
+    	<img src="http://i2.kym-cdn.com/entries/icons/original/000/009/889/Morpheus2.jpg" /> <br />
+    	że to tylko IFS?
+		</div>
+		
+		<div id="one" style="  position: fixed;top: 10px;
+    left: 10px; font-size: 32px;
+    color: white; text-shadow: 0px 0px 13px #FFF; text-align: center; visibility:hidden;">
+    	Nie da się tak po prostu, <br />
+    	
+    	<img src="http://trolloffame.com/wp-content/uploads/2013/01/onedoes.jpg" /> <br />
+    	zerwać cukierka przed wigilią. 
+		</div>
+		
+		<div id="andrzej" style="  position: fixed;top: 10px;
+    left: 10px; font-size: 32px;
+    color: white; text-shadow: 0px 0px 13px #FFF; text-align: center; visibility:hidden;">
+    	
+    	Andrzej<br> 
+    	<img src="DOR_7440k.jpg" width="75%"/> <br />
+    	Pierwszy tego imienia
+		</div>
+		
+		
+		<canvas style="display:block;" id="canvas"   ></canvas>
+		
+	<script id="script" type="text/javascript">
+	/*
+	$( "div.enterleave" )
+	.mouseenter(function() {
+	$( "p:first", this ).text( "mouse enter" );
+	$( "p:last", this ).text( ++n );
+	})
+	.mouseleave(function() {
+	$( "p:first", this ).text( "mouse leave" );
+	});*/
+
+
+	$("#ANDRZEJU").mouseenter(function() {
+	
+		document.getElementById('andrzej').style.visibility="visible";
+	});
+	$("#ANDRZEJU").mouseleave(function() {
+		document.getElementById('andrzej').style.visibility="hidden";
+	});
+	
+	
+	var disco = false;
+	var WIDTH_OFF = 728;
+	function abc()
+	{
+		$('#OK').html('I sylwestra który na długo zapadnie w pamięci!  <br> DISCO! <br><br><iframe width="640" height="360" src="//www.youtube.com/embed/aBnk84qt5dU?autoplay=1&rel=0" frameborder="0" allowfullscreen></iframe>');
+		
+		$('#HAHA').html('Wow!<br><img src="http://memecrunch.com/image/5263471f1605fb2dcf000275.jpg?w=264" ><br >Rude takie fajne	');
+    	$('#one').html('Nie można tak po prostu, <br ><img src="http://trolloffame.com/wp-content/uploads/2013/01/onedoes.jpg" > <br >podejść i zagadać. ');
+    	$('#ifs').html('A co jeżeli powiem Ci, <br><img src="http://i2.kym-cdn.com/entries/icons/original/000/009/889/Morpheus2.jpg" > <br >że to tylko tylko iluzja?');
+    	$('#cons').html('A jeżeli ona nie jest ruda... <br ><img src="http://memecrunch.com/image/5047393fafa96f67d1000001.jpg?w=400" > <br>... tylko się farbowała?');
+    	$('#she').html('');
+    	$('#bub').html('');
+    	$('#matinfy').html('');
+		
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+		disco = true;
+		WIDTH_OFF = 758;
+	};
+	function hardcore()
+	{
+		$('#OK').append("<br><br> Także: \"(...) pisać na priv!\" ^^ ");
+	}
+	var one = 460;
+	var zero = 250;
+	function count()
+	{
+		var m = Math.floor(zero / 60);
+		var s = zero % 60;
+		
+
+		if(s < 10)
+			$('#timer').html( m + " : 0" + s);
+		else
+			$('#timer').html( m + " : " + s);
+			
+		zero--;
+		one--;
+		setTimeout( count,1000 );
+	}
+	$(document).ready(function () {
+		//hide a div after 3 seconds
+		setTimeout( hardcore,one*1000 );
+		setTimeout( abc,zero*1000 );
+		setTimeout( count,1000 );
+	});
+	//$(document).ready(abc, 5000);
+
+	
+	//if( mx > width - 15 &&  mx <  width && my>5 && my <15 )
+					
+				//else 
+				//	document.getElementById('one').style.visibility="hidden";
+				//document.getElementById('one').style.left = 50;
+				//document.getElementById('one').style.top = height - 500;
+
+		function point(X, Y)
+	{
+		this.x = X;
+		this.y = Y;
+	}
+	
+	var bezier3 = function(a, b, c, d, t)
+	{
+			
+		var x, y;
+			
+		x = (1-t)*(1-t)*(1-t) * a.x + 3 * (1-t)*(1-t)*t * b.x + 3 *  (1-t) * t*t * c.x + t*t*t*d.x;
+		y = (1-t)*(1-t)*(1-t) * a.y + 3 *(1-t)*(1-t)*t * b.y + 3 *  (1-t) * t *t* c.y + t*t*t*d.y;	
+	
+		
+		return new point(x, y);
+	}
+	
+	function BezierObject(N)
+	{
+		this.data;
+		this.size;
+		
+		var cap = 0;
+		var back = false;
+
+		this.get = function(time)
+		{
+			
+			
+			var interval = 1/ ( this.size / 2 -1);
+			
+			var p = Math.floor( time / interval);
+			
+			var a, b, c, d, e;
+			
+			a = this.data[2*p];
+			b = this.data[2*p + 1];
+			d = this.data[2*p + 2];
+			e = this.data[2*p + 3];
+			var dx = e.x - d.x;
+			var dy = e.y - d.y; 
+			c = new point(d.x - dx, d.y - dy);
+
+			var out = bezier3(a, b, c, d, (time -  p * interval) / interval);
+			
+				
+			delete c;
+			return out;
+		}
+		this.generate= function(s)
+		{
+			delete this.data;
+			
+			this.size = s;
+			this.data = new Array();
+			
+			this.data[0] = new point(0, 0);
+			for(var i = 1; i < this.size; i++)
+			{
+				this.data[i] =  new point( Math.random()  , Math.random());
+				
+			}
+		}
+		this.recalculate = function()
+		{
+			//alert("X");
+			delete this.data[0];
+			delete this.data[1];
+			this.data[0] = this.data[this.size-2];
+			this.data[1] = this.data[this.size-1];
+			for(var i = 2; i < this.size; i++)
+			{
+				this.data[i] =  new point( Math.random() , Math.random());
+				
+			}
+		}
+		
+		this.generate(N);
+	}
+	
+	function BasiaObject (pGon, pBezier, pDt)
+	{
+		this.gon = pGon;
+		this.bezier = pBezier;
+		
+		this.data;
+		
+		this.time = 0;
+		
+		this.dt = pDt;
+		
+		
+		
+		
+		this.generate = function(qGon, qBezier)
+		{
+		
+			this.gon = qGon;
+			this.bezier = qBezier;
+			this.time = 0;
+			
+			
+			delete this.data;
+			this.data = new Array();
+			for(var i = 0; i < this.gon; i++)
+			{
+				this.data[i] = new BezierObject(qBezier);
+				
+			}
+		}
+		
+		this.recalculate = function()
+		{
+			
+			this.time = 0;
+			
+			for(var i = 0; i < this.gon; i++)
+			{
+				this.data[i].recalculate();
+			}
+		}	
+		
+		
+		this.update = function(dt)
+		{
+		
+			var points = new Array();
+			for(var i = 0; i < this.gon; i++)
+			{
+				
+				points[i] = this.data[i].get(this.time);
+			}	
+		
+			this.time += this.dt;
+			if(this.time > 1) this.recalculate();//(this.gon, this.bezier, this.pDt);
+			
+			return points;
+		}
+		
+		
+		
+		this.generate(pGon, pBezier, pDt);
+	}
+	
+	var a= new point(0, 0), b= new point(0, 0), c= new point(0, 0), d = new point(0, 0);
+	var width = 600;
+			var height = 600;
+			
+		var fitCreator = new Processing.Sketch(); // Deklaracja nowego szkicu ProcessingJS
+		fitCreator.attachFunction = function(processing) {
+			// Zmienne i funkcje użytkowe
+			var FPS = 30;
+			var DT = 1.0 / FPS;
+			
+			var mx = width/2;
+			var my = height/2;
+			
+			var x0 = 0, y0 = 0;
+			
+	
+			
+			var bombki = new Array();
+			var bombkiSize = 67;
+			bombki[0] = new point(0.2495956873315364,0.6505050505050505);
+			bombki[1] = new point(0.7433962264150943,0.7292929292929293);
+			bombki[2] = new point(0.6172506738544474,0.6626262626262627);
+			bombki[3] = new point(0.3638814016172507,0.6646464646464646);
+			bombki[4] = new point(0.3196765498652291,0.793939393939394);
+			bombki[5] = new point(0.3309973045822102,0.8525252525252526);
+			bombki[6] = new point(0.36873315363881404,0.4696969696969697);
+			bombki[7] = new point(0.4226415094339623,0.397979797979798);
+			bombki[8] = new point(0.4183288409703504,0.5696969696969697);
+			bombki[9] = new point(0.43827493261455525,0.48282828282828283);
+			bombki[10] = new point(0.44258760107816714,0.6525252525252525);
+			bombki[11] = new point(0.5778975741239892,0.5585858585858586);
+			bombki[12] = new point(0.5892183288409704,0.693939393939394);
+			bombki[13] = new point(0.5671159029649596,0.41515151515151516);
+			bombki[14] = new point(0.5304582210242588,0.501010101010101);
+			bombki[15] = new point(0.5358490566037736,0.34444444444444444);
+			bombki[16] = new point(0.47223719676549863,0.36464646464646466);
+			bombki[17] = new point(0.45714285714285713,0.2898989898989899);
+			bombki[18] = new point(0.5212938005390836,0.25555555555555554);
+			bombki[19] = new point(0.5164420485175202,0.41515151515151516);
+			bombki[20] = new point(0.4889487870619946,0.20606060606060606);
+			bombki[21] = new point(0.47547169811320755,0.26262626262626265);
+			bombki[22] = new point(0.5094339622641509,0.21414141414141413);
+			bombki[23] = new point(0.6598382749326146,0.8414141414141414);
+			bombki[24] = new point(0.6808625336927224,0.7333333333333333);
+			bombki[25] = new point(0.6075471698113207,0.9353535353535354);
+			bombki[26] = new point(0.5800539083557952,0.7646464646464647);
+			bombki[27] = new point(0.5811320754716981,0.9676767676767677);
+			bombki[28] = new point(0.42857142857142855,0.9797979797979798);
+			bombki[29] = new point(0.3908355795148248,0.9090909090909091);
+			bombki[30] = new point(0.3730458221024259,0.996969696969697);
+			bombki[31] = new point(0.4226415094339623,0.8656565656565657);
+			bombki[32] = new point(0.5611859838274933,0.7676767676767676);
+			bombki[33] = new point(0.4592991913746631,0.7585858585858586);
+			bombki[34] = new point(0.3902964959568733,0.7383838383838384);
+			bombki[35] = new point(0.33584905660377357,0.6707070707070707);
+			bombki[36] = new point(0.2803234501347709,0.692929292929293);
+			bombki[37] = new point(0.5460916442048518,0.8929292929292929);
+			bombki[38] = new point(0.6026954177897574,0.8393939393939394);
+			bombki[39] = new point(0.5428571428571428,0.8212121212121212);
+			bombki[40] = new point(0.5401617250673855,0.6898989898989899);
+			bombki[41] = new point(0.5164420485175202,0.5636363636363636);
+			bombki[42] = new point(0.45660377358490567,0.5646464646464646);
+			bombki[43] = new point(0.4921832884097035,0.21515151515151515);
+			bombki[44] = new point(0.49703504043126684,0.08484848484848485);
+			bombki[45] = new point(0.4954177897574124,0.04040404040404041);
+			bombki[46] = new point(0.47008086253369274,0.06868686868686869);
+			bombki[47] = new point(0.521832884097035,0.06868686868686869);
+			bombki[48] = new point(0.5180592991913746,0.12222222222222222);
+			bombki[49] = new point(0.4738544474393531,0.1191919191919192);
+			bombki[50] = new point(0.4840970350404313,0.08484848484848485);
+			bombki[51] = new point(0.48787061994609165,0.06464646464646465);
+			bombki[52] = new point(0.5045822102425876,0.06868686868686869);
+			bombki[53] = new point(0.5105121293800539,0.09292929292929293);
+			bombki[54] = new point(0.49433962264150944,0.10707070707070707);
+			bombki[55] = new point(0.49433962264150944,0.09292929292929293);
+			bombki[56] = new point(0.48086253369272236,0.10505050505050505);
+			bombki[57] = new point(0.4862533692722372,0.09494949494949495);
+			bombki[58] = new point(0.5045822102425876,0.09494949494949495);
+			bombki[59] = new point(0.5094339622641509,0.10808080808080808);
+			bombki[60] = new point(0.5126684636118598,0.07575757575757576);
+			bombki[61] = new point(0.49973045822102424,0.08383838383838384);
+			bombki[62] = new point(0.4894878706199461,0.07272727272727272);
+			bombki[63] = new point(0.4981132075471698,0.06666666666666667);
+			bombki[64] = new point(0.4948787061994609,0.049494949494949494);
+			bombki[65] = new point(0.477088948787062,0.06868686868686869);
+			bombki[66] = new point(0.493800539083558,0.07777777777777778);
+			bombki[67] = new point(0.4485175202156334,0.35555555555555557);
+			
+			var previousPoint = new point(0, 0);
+			var currentPoint = new point(0, 0);
+			var parametr = 0.175;
+			
+			var snieg = new Array();
+			var sniegSize = 0;
+			for(var i = 0; i < 150; i++)
+			{
+				snieg[sniegSize] = new point( Math.round( width*Math.random() ) , Math.round(height*Math.random()));
+				sniegSize++;
+			}
+			var gwiazdki = new Array();
+			var gwiazdkiSize = 0;
+			for(var i = 0; i < 55; i++)
+			{
+				gwiazdki[gwiazdkiSize] = new point( Math.round( width*Math.random() ) , Math.round(height*Math.random()));
+				gwiazdkiSize++;
+			}
+			
+			
+			var basia = new Array();
+			var ileBasi = 6;
+			for(var i = 0; i < ileBasi; i++)
+				basia[i] = new BasiaObject(3, 8, 0.001 * (3+1));
+			basia[4] = new BasiaObject(3, 16, 0.0025 * (3+1));
+			
+			
+			// ------------------------------------------------
+			// "Konstruktor"
+			processing.setup = function() {
+				// Ustawienia ogólne
+				processing.size(width, height); 
+				processing.frameRate(FPS);
+				processing.smooth();
+				
+
+				processing.fill(0, 0,25, 255);
+				processing.rect(0, 0, width, height);
+				
+				processing.stroke(255);
+			}
+		
+			processing.draw = function() {
+			
+				var points = basia[4].update();
+				var r, g, b,a ;
+				r = points[basia[4].gon -2].x*255;
+				g = points[basia[4].gon -1].y*255;
+				b = points[basia[4].gon -1].x*255;
+				a = points[basia[4].gon -1].y*255;
+				delete points;
+				//processing.stroke(r, g, b);
+				if(disco)
+					processing.fill(r ,g, b,a/5);
+				else
+					processing.fill(0, 0, 50, 8 + Math.round(13*Math.random()) );
+					
+				processing.rect(-16, -16, width+32, height+32);
+				
+				processing.strokeWeight(1);
+				processing.stroke(255);
+				processing.fill(255, 255, 255, 50);
+				processing.ellipse(width/2, 1.435*height, 2*width ,height);
+				
+				for(var i = 0; i < gwiazdkiSize; i++)
+				{
+					processing.strokeWeight(Math.round(3*Math.random()));
+					processing.stroke( 255 , 
+										255, 
+										Math.round(200*Math.random())+55,
+										Math.round(255*Math.random())
+									);
+					
+					processing.point(gwiazdki[i].x, gwiazdki[i].y);
+				}
+				
+				for(var i = 0; i < sniegSize; i++)
+				{
+					
+					
+					processing.strokeWeight(Math.round(2*Math.random()));
+					processing.stroke( 255 , 
+										255, 
+										255,//Math.round(200*Math.random())+55,
+										Math.round(55*Math.random()+21)
+									);
+					
+					processing.point(snieg[i].x, snieg[i].y);	
+					if(Math.random() > 0.5)
+						snieg[i].y += ( (my )/height  )*20 *Math.random() ;// Math.random() * 6 + 3;
+					if(Math.random() > 0.25)
+						snieg[i].x += ( (mx - width/2)/width  )*5 *Math.random();
+						
+					if(snieg[i].y > height)
+						snieg[i].y=0;
+					if(snieg[i].x > width)
+						snieg[i].x=0;
+					if(snieg[i].x < 0)
+						snieg[i].x=width;
+					
+				}
+				
+				
+				
+			
+				for(var step = 0; step < 450; step++)
+				{
+					var x, y;
+					var i = Math.random();
+				
+					var r0 = x0 * x0 + y0 * y0;
+				
+						//gdy zbyt powoli to zmień na losowe czyste
+						r = Math.round(255*Math.random());
+						g = Math.round(255*Math.random());
+						b = Math.round(255*Math.random());
+						a = Math.round(255*Math.random());
+					
+					if(i >= 0 && i < 0.33)
+					{
+						x = 0.2544367441528208 * x0 -0.6618709774944381 * y0 + 0.4512699349331229 ;
+						y =  0.43225741788468447 * x0 + 0.27523474852177526	 * y0 -0.10490252227855909;
+					} 
+					if(i >= 0.33 && i < 0.66)
+					{
+						x = 0.13373795018516685 * x0 + 0.6022069217171327	 * y0 +0.3806712664935613 ;
+						y =  -0.4744327034850078 * x0 +0.17016578792101072 * y0 +0.3530122826540033;
+					}
+					if(i >= 0.66 && i <= 1.0)
+					{
+						x = -0.5757314013511102 * x0 -0.022007073939761798 * y0 + 0.7979552224931876;
+						y = 0.1919341516585188* x0 +0.7357578692974661 * y0 +0.15221836925372603;
+					}
+
+
+					/*
+					if(i >=  0.787473 && i <  0.787473 +  0.212527)
+					{
+						x = 0.088272 * x0 + 0.520988 *y0 + 0.785360;
+						y = -0.463889 * x0 - 0.377778 * y0 + 8.095795;
+						
+						x /= r0;
+						y /= r0;
+					}
+					*/
+					if(disco)
+						processing.stroke(r ,g, b,Math.round(255*Math.random()));
+					else
+					processing.stroke(Math.round(88*Math.random())+8 , Math.round(55*Math.random())+200, Math.round(34*Math.random())+13,Math.round(255*Math.random()));
+					processing.strokeWeight(Math.round(3*Math.random())+2);
+					processing.point((x/2 + 0.25 ) * width, (-y +1.0 -0.025) * height);
+					x0 = x;
+					y0 = y;
+				}
+				
+				
+				for(var i = 0; i < bombkiSize; i++)
+				{
+					if(Math.random() < 0.2)
+					{
+						processing.strokeWeight(Math.round(8*Math.random())+5);
+						processing.stroke(Math.round(111*Math.random())+144 , Math.round(166*Math.random())+89, Math.round(111*Math.random())+144,Math.round(255*Math.random()));
+						processing.point(bombki[i].x * width, bombki[i].y * height);	
+					}
+				}
+				
+				processing.stroke(255, 0, 0);
+				processing.strokeWeight(5);
+				
+				
+				var points = basia[0].update();
+				var r, g, b;
+				r = points[basia[0].gon -2].x*255;
+				g = points[basia[0].gon -2].y*255;
+				b = points[basia[0].gon -1].x*255;
+				delete points;
+				processing.stroke(r, g, b);
+				
+				processing.line(width - previousPoint.x, previousPoint.y, width -  currentPoint.x  , currentPoint.y);
+				
+				var points = basia[1].update();
+				var r, g, b;
+				r = points[basia[1].gon -2].x*255;
+				g = points[basia[1].gon -2].y*255;
+				b = points[basia[1].gon -1].x*255;
+				delete points;
+				processing.stroke(r, g, b);
+				processing.line(previousPoint.x, height - previousPoint.y,   currentPoint.x  , height -currentPoint.y);
+				
+				
+				var points = basia[2].update();
+				var r, g, b;
+				r = points[basia[2].gon -2].x*255;
+				g = points[basia[2].gon -2].y*255;
+				b = points[basia[2].gon -1].x*255;
+				delete points;
+				processing.stroke(r, g, b);
+				processing.line(width - previousPoint.x, height - previousPoint.y, width -  currentPoint.x  , height -currentPoint.y);
+				
+				var points = basia[3].update();
+				var r, g, b;
+				r = points[basia[3].gon -2].x*255;
+				g = points[basia[3].gon -2].y*255;
+				b = points[basia[3].gon -1].x*255;
+				delete points;
+				processing.stroke(r, g, b);
+				processing.line(previousPoint.x, previousPoint.y,  currentPoint.x  , currentPoint.y);
+				
+				
+				previousPoint.x = currentPoint.x;
+				previousPoint.y = currentPoint.y;
+		
+				currentPoint.x = previousPoint.x * (1 - parametr  ) + processing.mouseX * (parametr);
+				currentPoint.y = previousPoint.y * (1 - parametr  ) + processing.mouseY * (parametr);
+				
+				c = a;
+				d = b;
+				
+				
+			}
+			
+			processing.mouseMoved = function() {
+				if(disco){
+				/*
+				 var div = document.getElementById('OK'),
+				deg = (height/2 - my)/90 ;
+
+				div.style.webkitTransform = 'rotate('+deg+'deg)'; 
+				div.style.mozTransform    = 'rotate('+deg+'deg)'; 
+				div.style.msTransform     = 'rotate('+deg+'deg)'; 
+				div.style.oTransform      = 'rotate('+deg+'deg)'; 
+				div.style.transform       = 'rotate('+deg+'deg)'; 
+				*/
+				// nie działa z youtube :(
+				}
+				var points = basia[0].update();
+				var r, g, b;
+				r = points[basia[0].gon -2].x*255;
+				g = points[basia[0].gon -2].y*255;
+				b = points[basia[0].gon -1].x*255;
+				delete points;
+				processing.stroke(r, g, b);
+				
+				processing.line(width - previousPoint.x, previousPoint.y, width -  currentPoint.x  , currentPoint.y);
+				
+				var points = basia[1].update();
+				var r, g, b;
+				r = points[basia[1].gon -2].x*255;
+				g = points[basia[1].gon -2].y*255;
+				b = points[basia[1].gon -1].x*255;
+				delete points;
+				processing.stroke(r, g, b);
+				processing.line(previousPoint.x, height - previousPoint.y,   currentPoint.x  , height -currentPoint.y);
+				
+				var points = basia[2].update();
+				var r, g, b;
+				r = points[basia[2].gon -2].x*255;
+				g = points[basia[2].gon -2].y*255;
+				b = points[basia[2].gon -1].x*255;
+				delete points;
+				processing.stroke(r, g, b);
+				processing.line(width - previousPoint.x, height - previousPoint.y, width -  currentPoint.x  , height -currentPoint.y);
+				var points = basia[3].update();
+				var r, g, b;
+				r = points[basia[3].gon -2].x*255;
+				g = points[basia[3].gon -2].y*255;
+				b = points[basia[3].gon -1].x*255;
+				delete points;
+				processing.stroke(r, g, b);
+				processing.line(previousPoint.x, previousPoint.y,  currentPoint.x  , currentPoint.y);
+				
+				
+				previousPoint.x = currentPoint.x;
+				previousPoint.y = currentPoint.y;
+		
+				currentPoint.x = previousPoint.x * (1 - parametr  ) + processing.mouseX * (parametr);
+				currentPoint.y = previousPoint.y * (1 - parametr  ) + processing.mouseY * (parametr);
+				mx = processing.mouseX;
+				my = processing.mouseY;
+				//a = (mx/width - 0.5)*2;
+				//b = (my/height - 0.5)*2;
+				
+				document.getElementById('OK').style.left = width /2 - WIDTH_OFF/2 + (mx - width/2) / 25 * (my / height);
+				document.getElementById('OK').style.top = height * 0.130;// + (my - height/2) / 25;
+				
+				//document.getElementById('HAHA').style.left = width /2 - 640/2 + (mx - width/2) / 25 * (my / height);
+				//document.getElementById('HAHA').style.top = height -360 ;// + (my - height/2) / 25;
+				
+				if(mx > width - 10 && my > height - 10)
+					document.getElementById('HAHA').style.visibility="visible";
+				else 
+					document.getElementById('HAHA').style.visibility="hidden";
+				document.getElementById('HAHA').style.left = width - 500;
+				document.getElementById('HAHA').style.top = height - 500;
+					
+				if( mx > width/2-10 &&  mx < width/2 + 10 && my>height/2-10 && my < height/2 + 10 )
+					document.getElementById('matinfy').style.visibility="visible";
+				else 
+					document.getElementById('matinfy').style.visibility="hidden";
+				document.getElementById('matinfy').style.left = width - 500;
+				document.getElementById('matinfy').style.top = height - 400 -50
+				if( mx > width/2-10 &&  mx < width/2 + 10 && my>height*0.05 && my < height*0.1 )
+					document.getElementById('bub').style.visibility="visible";
+				else 
+					document.getElementById('bub').style.visibility="hidden";
+				document.getElementById('bub').style.left = width/2 - 200;
+				document.getElementById('bub').style.top = height - 250;
+				
+				
+				if( mx > width/2-10 &&  mx < width/2 + 10 && my>height*0.90 && my < height*0.95 )
+					document.getElementById('she').style.visibility="visible";
+				else 
+					document.getElementById('she').style.visibility="hidden";
+				document.getElementById('she').style.left = width/2 - 200;
+				document.getElementById('she').style.top = 50;
+				
+				
+				if( mx > 5 &&  mx <  45 && my>height*0.93 && my < height*0.98 )
+					document.getElementById('cons').style.visibility="visible";
+				else 
+					document.getElementById('cons').style.visibility="hidden";
+				document.getElementById('cons').style.left = width-500 ;
+				document.getElementById('cons').style.top = height - 600;
+				
+				if( mx > 5 &&  mx <  45 && my>5 && my <15 )
+					document.getElementById('ifs').style.visibility="visible";
+				else 
+					document.getElementById('ifs').style.visibility="hidden";
+				document.getElementById('ifs').style.left = 25;
+				document.getElementById('ifs').style.top =  height - 400 -50 ;
+				
+				if( mx > width - 15 &&  mx <  width && my>5 && my <15 )
+					document.getElementById('one').style.visibility="visible";
+				else 
+					document.getElementById('one').style.visibility="hidden";
+				document.getElementById('one').style.left = 50;
+				document.getElementById('one').style.top = height - 500;
+				
+				
+				document.getElementById('andrzej').style.left = width - 300;
+				document.getElementById('andrzej').style.top = height - 500;
+				
+			}
+			processing.mousePressed = function()
+			{
+				bombki[bombkiSize] = new point(mx, my);
+				
+				bombkiSize++;
+			}
+			processing.mouseReleased = function()
+			{
+				
+			}
+		}
+		
+		
+		//var canvas = document.getElementById("canvas"); // Pobranie canvas w którym będzie wyświetlany szkic
+		//var p = new Processing(canvas, fitCreator); // instalacja szkicu
+		var  p;// = new Processing(canvas, fitCreator);
+	function res()
+	{
+		
+		
+	//alert("X");
+		var canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d');
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		
+		width = canvas.width;
+		height = canvas.height;
+		
+		document.getElementById('OK').style.left = width /2 - WIDTH_OFF/2;
+		document.getElementById('OK').style.top = height * 0.130;
+		
+		//delete p;
+		 // instalacja szkicu
+		if(p !== undefined) p.exit();
+		 delete p;
+		  p = new Processing(canvas, fitCreator);
+		p.updateSize(width, height);
+		
+	}
+	res();
+	
+	</script>
+</body>
+</html>

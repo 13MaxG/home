@@ -1,0 +1,5 @@
+B(t) = \frac{
+\sum_{i=0}^{N-1}( \binom{N-1}{i} \cdot t^{i} \cdot (t-1)^{N-1-i}  \cdot P_i \cdot W_i)
+}{
+\sum_{i=0}^{N-1}( \binom{N-1}{i} \cdot t^{i} \cdot (t-1)^{N-1-i}  \cdot W_i)
+}  

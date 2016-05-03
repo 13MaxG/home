@@ -1,0 +1,487 @@
+<html>
+<head >
+  <script src="processing.js"></script>
+  <script src="fit.js"></script>
+  
+</head>
+
+<body style = "width:100%; height:100%;margin:0; padding:0;" onresize="res()">
+
+		<canvas style="display:block;" id="canvas"   ></canvas>
+
+	<script id="script" type="text/javascript">
+
+var width = 600;
+			var height = 600;
+			
+
+
+		function point(X, Y)
+		{
+			this.x = X;
+			this.y = Y;
+		}
+		
+
+		// n - ilość punktów
+		// data - tablica z punktami
+		// t - aktualny czas
+		
+		
+		var fitCreator = new Processing.Sketch(); // Deklaracja nowego szkicu ProcessingJS
+		fitCreator.attachFunction = function(processing) {
+			// Zmienne i funkcje użytkowe
+			var FPS = 30;
+			var DT = 1.0 / FPS;
+			
+			
+			var	schema = new fitSchema();
+			schema.addKeyPoint(0, 0.0);
+				schema.addControlPoint(0, 0.2);
+				schema.addControlPoint(1, 0.35);
+			schema.addKeyPoint(1, 0.5);
+			schema.addKeyPoint(1, 0.65);
+				schema.addControlPoint(1, 0.85);
+				schema.addControlPoint(0, 0.95);
+			schema.addKeyPoint(0, 1.0);
+			schema.sort();
+			
+			
+			var	color_r = new fitSchema();
+			var	color_g = new fitSchema();
+			var	color_b = new fitSchema();
+			
+			color_r.addKeyPoint(255, 0.0);
+			color_g.addKeyPoint(0, 0.0);
+			color_b.addKeyPoint(0, 0.0);
+			
+			color_r.addKeyPoint(255, 0.1666);
+			color_g.addKeyPoint(0, 0.1666);
+			color_b.addKeyPoint(255, 0.1666);
+			
+			color_r.addKeyPoint(0, 0.3333);
+			color_g.addKeyPoint(0, 0.3333);
+			color_b.addKeyPoint(255, 0.3333);
+			
+			color_r.addKeyPoint(0, 0.5);
+			color_g.addKeyPoint(255, 0.5);
+			color_b.addKeyPoint(255, 0.5);
+			
+			color_r.addKeyPoint(0, 0.6666);
+			color_g.addKeyPoint(255, 0.6666);
+			color_b.addKeyPoint(0, 0.6666);
+			
+			color_r.addKeyPoint(255, 0.8333);
+			color_g.addKeyPoint(255, 0.8333);
+			color_b.addKeyPoint(0, 0.8333);
+			
+			color_r.addKeyPoint(255, 1.0);
+			color_g.addKeyPoint(0, 1.0);
+			color_b.addKeyPoint(0, 1.0);
+			
+			color_r.sort();
+			color_g.sort();
+			color_b.sort();
+			
+			
+			var cR = new fitFloating(color_r); cR.clear();
+			var cG = new fitFloating(color_g);cG.clear();
+			var cB = new fitFloating(color_b);cB.clear();
+			
+			var xMousePositionPixels = 0;
+			var yMousePositionPixels = 0;
+			
+			var a = 1;
+			var b = 1;
+			
+			var radius = 15;
+			
+			var precision = 50;
+			
+			var da = 1/precision;
+			var a = 0;
+			
+			var dr = 0.10 * width*height/500000;
+			
+			var steps =  0.075 * Math.sqrt(2) * 250;
+			
+			var A, B;
+			
+			
+			var C, D;
+			
+			var R;
+			
+			
+			var inc = false;
+			
+			var bezierTime = 0.0;
+			var backinTime = 0.0;
+			var stage = 2;
+			var data = new Array();		
+			var n = 8;
+			data[0] = new point(xMousePositionPixels, yMousePositionPixels);
+			
+			for(var i = 1; i < n; i++)
+				data[i] = new point(Math.round(Math.random()*width), Math.round(Math.random()*height));	
+			data[n-2] = new point(width/2, height/2);
+			
+			var factor = 1;
+			
+			var floating = new fitFloating(schema);
+			floating.clear();
+			
+			var info = true;
+			
+			
+			
+			
+			var bezier3 = function(a, b, c, d, t)
+		{
+			
+			var x, y;
+			
+			
+			var P = A + 0.9;
+			var Q = B + 0.9;
+			
+			x = (1-t)*(1-t)*(1-t) * a.x + P*3 * (1-t)*(1-t)*t * b.x + Q*3 *  (1-t) * t*t * c.x + t*t*t*d.x;
+			y = (1-t)*(1-t)*(1-t) * a.y + Q*3 *(1-t)*(1-t)*t * b.y + P*3 *  (1-t) * t *t* c.y + t*t*t*d.y;
+		//alert(P);
+			
+			return new point(x, y);
+		}
+		
+			
+			var Bezier = function(n, data, t)
+		{
+			var interval = 1/ ( n / 2 -1);
+			
+			var p = Math.floor( t / interval);
+			
+			var a, b, c, d, e;
+			
+			a = data[2*p];
+			b = data[2*p + 1];
+			d = data[2*p + 2];
+			e = data[2*p + 3];
+			var dx = e.x - d.x;
+			var dy = e.y - d.y; 
+			c = new point(d.x - dx, d.y - dy);
+
+			var out = bezier3(a, b, c, d, (t -  p * interval) / interval);
+				 
+				 
+			delete c;
+			return out;
+			
+			
+		};
+		
+		
+		var updateSize = function(W, H)
+		{
+			processing.size(width, height); 
+			processing.background(0);
+		}
+			
+			
+			//var Dh = new point(500, 500);
+			// ------------------------------------------------
+			// "Konstruktor"
+			processing.setup = function() {
+			
+				//width = document.getElementById("canvas").width;
+				//height = document.getElementById("canvas").height;
+				// Ustawienia ogólne
+				processing.size(width, height); 
+				processing.frameRate(FPS);
+				processing.noSmooth();
+				
+				//processing.
+				processing.background(0);
+				processing.fill(0);
+				processing.rect(0, 0, width, height);
+				
+				//
+
+				var font = processing.loadFont("FreeMono.ttf"); 
+
+				processing.textFont(font); 
+				
+			}
+		
+			processing.draw = function() {
+				// Czyść ekran
+				//processing.background(255, 233, 255, 45);
+					//alert(bezierTime);
+				//processing.fill(255, 255, 255, Math.round(233*Math.random())+144);
+				//	processing.rect(0, 0, width-1, height-1);
+				
+				
+				processing.strokeWeight(1);
+				processing.stroke(0);
+				processing.fill(0, 0, 0, Math.round(Math.random() * 50)+145);
+					processing.rect(0, 0, width-1, height-1);
+				
+				
+				
+				//if(stage != 1)
+				//{
+				
+				if(stage == 0) 
+					bezierTime += 0.03;
+					
+				if(stage == -1 || stage == -3 || bezierTime >=0.7) 
+					backinTime += 0.03;
+				
+				if(bezierTime >= 1 && stage != -1) 
+				{
+					stage = -1;
+					bezierTime = 1;
+					//backinTime = 0.0;
+				}
+				
+				if(bezierTime < 0)
+				{
+					bezierTime = 0;
+					stage = 0;
+				}
+				if(backinTime >= bezierTime ) 
+				{
+					if(stage == -3)
+					{
+						stage = 2;
+					}
+					
+					if(stage == -1)
+					{
+					backinTime = 0;
+					stage = -2;
+					bezierTime = 0;
+					
+			}
+			
+				}
+				
+				var point ;
+				var point0;
+				for(var t = backinTime; t <= bezierTime; t+= 0.005)
+				{
+				
+					
+
+					point = Bezier(n, data, t);
+					//if(t < 0.5)
+					//	point= bezier3(Da, Db, Dc, Dd, t / 0.5);
+					//else
+					//	point= bezier3(Dd, De, Df, Dg, (t-0.5) / 0.5);
+					
+					processing.stroke(255);
+					processing.strokeWeight(15 - t * 10 );
+					//alert(point.x);
+					if(t > backinTime)					
+						processing.line(point0.x,point0.y, point.x, point.y);	
+					
+					delete point0;
+					point0 = point;
+								
+				}
+				//alert(stage);
+				//}
+				if(stage < 0 && stage != -3)
+				{
+				
+				
+				
+				
+				
+				
+				
+				var x0, y0
+				a = 0;
+				
+				var r = radius;
+				
+				if(floating.time > 1)
+				{
+					floating.clear();
+					floating.update(0);
+					
+					if(factor == 5)
+					{
+						stage = 2;
+					} else
+					
+					stage = -4;
+					
+					
+				}
+				
+				
+				floating.update(DT / 10 * factor );
+				
+				cR.clear();
+					cG.clear();
+					cB.clear();
+		
+				var val = floating.value;
+				
+				if(val > 1) val = 1;
+				
+				var tot = precision * steps;
+				
+				
+				
+				var limit = tot * ((val ));
+				//for(var s  =0; s < steps; s++)
+				//a = limit * da;
+				//r = limit * dr;
+				for(var i = 0; i <= limit; i++)
+				{
+					
+				
+					a += da;
+					r += dr;
+					var x  =  width/2 + Math.cos(a * Math.PI * 2 * A*2) * r*C;
+					var y  =   height/2 + Math.sin(a* Math.PI * 2 *B*2 ) * r*D;
+				
+					cR.update(1/(tot ));
+					cG.update(1/(tot));
+					cB.update(1/(tot));
+					
+					processing.stroke(cR.value, cG.value, cB.value);
+					processing.strokeWeight( 1 + i/limit  * 8  );
+					if(i > 0 )
+						processing.line(x0, y0, x, y);
+				
+					x0 = x;
+					y0 = y;
+				}
+				
+				}
+				
+				
+				
+				
+				if(info)
+				{
+					processing.textSize(64);
+					processing.fill(255);
+					processing.text("A flower for you.", 50,50, width - 100, height-100);
+				processing.textSize(48);
+					processing.text("Please click to start. You can move mouse to modify parameters.", 50,150, width - 100, height-100);
+				
+					processing.textSize(32);
+					processing.text("                        1618.pl\nAndrzej Golonka, 2013", width  - 380, height -50);
+				
+				}	
+					
+			}
+			// Wejście
+			processing.mouseDragged = function() {
+				xMousePositionPixels = processing.mouseX;
+				yMousePositionPixels = processing.mouseY;
+				Db.x = xMousePositionPixels;
+				Db.y = yMousePositionPixels;
+			
+				
+			}
+			processing.mouseMoved = function() {
+				xMousePositionPixels = processing.mouseX;
+				yMousePositionPixels = processing.mouseY;
+				A = (width/2 - xMousePositionPixels)  / (width/2) / 3;
+				//A = 1;
+				B = (height/2 - yMousePositionPixels)  / (height/2) / 3;
+				
+				
+				//A =Math.atan2(yMousePositionPixels, xMousePositionPixels);
+					//A = Math.atan2(x, y);
+					//alert(xMousePositionPixels);
+					
+				//A = Math.atan2(yMousePositionPixels, xMousePositionPixels)/2 ;	
+				R =  Math.sqrt( (width/2 - xMousePositionPixels)*(width/2 - xMousePositionPixels) + (height/2 - yMousePositionPixels)*(height/2 - yMousePositionPixels) )/
+				Math.sqrt(width*width/4 + height*height/4);
+				
+				//E
+				//steps = (10*(yMousePositionPixels / height ));
+				//alert(B);
+				//data[5].x = xMousePositionPixels;
+				//data[5].y = yMousePositionPixels;
+
+
+			}
+			processing.mousePressed = function() {
+				xMousePositionPixels = processing.mouseX;
+				yMousePositionPixels = processing.mouseY;
+				//
+				if(stage <0 )
+				{
+					factor = 5;
+				}
+				if(stage ==0)
+				{
+					stage  = -3;
+					backinTime = 0;
+				}
+				if( stage == 2 || stage < 0)
+				{
+					info = false;
+						if(stage < 0)
+							inc = true;
+					C =  0.5 + ((xMousePositionPixels / width ));
+					//D = Math.atan2(yMousePositionPixels, xMousePositionPixels)/2 
+					D =  0.5 +  ((yMousePositionPixels / height ));
+					//C =  Math.sqrt( (width/2 - xMousePositionPixels)*(width/2 - xMousePositionPixels) + (height/2 - yMousePositionPixels)*(height/2 - yMousePositionPixels) )/
+				Math.sqrt(width*width/4 + height*height/4);
+					//alert("X");
+					for(var i = 0; i < n; i++)
+						delete data[i];
+					delete data;
+				
+					data =  new Array();		
+					n = 8;
+					data[0] = new point(xMousePositionPixels, yMousePositionPixels);
+					for(var i = 1; i < n; i++)
+						data[i] = new point(width/2 + Math.round((2*Math.random()-1)*width/2), height/2 + Math.round((2*Math.random()-1)*height/2));	
+					data[n-2] = new point(width/2 , height/2);
+					
+					bezierTime = 0.0;
+					backinTime = 0.0;
+					 stage = 0;
+					 floating.clear();
+					floating.update(0);
+					factor = 1;
+				//alert("S");
+				}
+		
+			}
+		}
+		
+		//var canvas = document.getElementById("canvas"); // Pobranie canvas w którym będzie wyświetlany szkic
+		//var p = new Processing(canvas, fitCreator); // instalacja szkicu
+		var  p;// = new Processing(canvas, fitCreator);
+	function res()
+	{
+	//alert("X");
+		var canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d');
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		
+		width = canvas.width;
+		height = canvas.height;
+		//delete p;
+		 // instalacja szkicu
+		if(p !== undefined) p.exit();
+		 delete p;
+		  p = new Processing(canvas, fitCreator);
+		p.updateSize(width, height);
+		
+	}
+	res();
+	
+	</script>
+</body>
+</html>
+	

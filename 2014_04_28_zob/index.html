@@ -1,0 +1,465 @@
+<html>
+<head>
+	<meta charset="utf-8"> 
+	<script src="./viz/processing.js"></script>
+	<script src="tools.js"></script>
+	<script src="bezier0.js"></script>
+	<script src="bezier1.js"></script>
+	<script src="bezier2.js"></script>
+	<script src="bezier3.js"></script>
+	<script src="bezier4.js"></script>
+	<script src="bezier5.js"></script>
+	<script src="bezier6.js"></script>
+	<script src="bezier7.js"></script>
+	<script src="bezier8.js"></script>
+	<title> Krzywe Béziera </title>
+	
+	<style>
+
+	
+	body
+	{
+		width: 500px;	
+		margin: 35px auto;
+		text-align: justify;
+		font-family: Georgia;
+		font-size: 16px;
+		font-weight: 100;
+	}
+
+	h1#title
+	{
+		text-align: center;
+		margin: 10px 10px;
+		font-size:48px;
+		font-family: Georgia;	
+		font-weight: 300;
+	}
+	h2#desc
+	{
+		text-align: center;
+		font-weight: 300;
+		margin: 10px 10px;
+		font-size:18px;
+	}
+	h3
+	{
+	font-family: Georgia;
+	font-size: 18px;
+	}
+	ul{
+		background-color: #FFFFFF;
+	   
+	   
+		padding:10px;
+		padding-bottom: 0px;
+	}
+
+	li{
+		margin-left:10px;
+		margin-bottom:10px;
+	}
+	canvas
+	{
+		border-style:solid;
+		border-width:1px;
+		
+		
+	}
+	
+	#description
+	{
+		color: #555;
+		width: 450px;
+		//float:right;
+		margin: 0 auto;
+	}
+	
+	</style>
+</head>
+<body>
+	<h1 id="title"> Krzywe Béziera </h1>
+	<h2 id="desc"> Andrzej Golonka 2014</h2>
+	
+	<h3> Wstęp</h3>
+	<p>Krzywe Béziera są to krzywe parametryczne określone <i>n</i> punktami kontrolnymi. Mówi się, że krzywa taka jest <i>n-1</i> -tego stopnia. </p>
+	<p>
+	 Krzywa taka jest zbiorem wszystkich punktów wynikających z określonego równania parametrycznego. Równanie krzywej Béziera jest opisane przez <i>n</i> współczynników, które najczęściej są punktami.</p>
+	 
+	 <p>
+	 <canvas id="bezier0" width="500" height="500"></canvas>
+	 <script id="script" type="text/javascript">	
+	 	var canvas0 = document.getElementById("bezier0"); 
+		var p0 = new Processing(canvas0, bezier0); 
+	 </script>
+	 </p>
+	 
+	<div id="description">
+	<h3> Wyjaśnienie do aplikacji</h3>
+	<p>
+		Punkty kontrolne można przesuwać. Aby aktywować przesuwanie, należy kliknąć lewym przyciskiem myszy na wybrany punkt. Aby go "postawić", należy kliknąć przyciskiem myszy ponownie. Klikając 'A' na klawiaturze można schować/pokazać linie pomocnicze pomiędzy punktami kontrolnymi. Ilość punktów kontrolnych można zwiększać i zmniejszać klawiszami 'Z' oraz 'X'. Początkowe pozycje punktów są generowane prawie losowo.
+	</p>
+	<p>
+		Uwaga, aby działała obsługa klawiatury należy kliknąć myszką na planszy.
+	</p>
+	</div>
+	
+	<h3> Początki</h3>
+<p>
+	Początkowo badania nad tymi krzywymi były objęte tajemnicą służbową. Były one były prowadzone przez konkurencyjne firmy Renault oraz Citroën. Pod koniec lat 60 XX w. pojawiły się pierwsze wzmianki na temat owych badań. Pierwszy upublicznił je Pierre Bézier pracujący dla Renault, a w roku 1972 zostały spopularyzowane przez artykuł w <i> The Computer Journal</i>[1].
+</p>
+
+	<h3> Model matematyczny</h3>
+<p>
+	<i>t</i> - parametr czasu. Aby zdobyć kształt całej krzywej należy zebrać punkty dla każdego <i>t</i> z przedziału [0, 1] <br />
+	<img src="./img/0.png" /> - punkt kontrolny. <img src="./img/1.png" /> <br />
+	<i>N</i> - ilość punktów kontrolnych
+</p>
+<p align="center">
+<img  src="./img/2.png" />
+</p>
+<p>
+	Na przykład dla <i>N</i> = 4, wzór wygląda tak:
+</p>
+	<p align="center">
+		<img  src="./img/3.png" />
+	</p>
+<p>
+We wzorze widać, że występuje w nim dwumian Newtona w sposób podobny do tego jak we wzorach skróconego mnożenia, zatem w praktyce dobrze jest wykorzystać trójkąt Pascala.
+</p>
+
+	<h3> Prosta wizualizacja</h3>
+<p>
+Z podanego wzoru możemy ułożyć krzywą Béziera w przestrzeni o dowolnej liczbie wymiarów. Wzór należy wtedy zastosować osobno dla każdego z nich. W przypadku aplikacji zamieszczonej wyżej, mieliśmy doczynienia z planszą dwuwymiarową, a każdy punkt kontrolny miał określoną pozycję poprzez składowe <i>x</i> i <i>y</i>. Punkt krzywej dla danego <i>t</i> będzie na pozycji <img src="./img/4.png" />. Obliczając np. <img src="./img/5.png" /> z podanego wzoru, jako <img src="./img/6.png" /> będziemy używać <img src="./img/7.png" />
+
+</p>
+
+
+<p>
+	 <canvas id="bezier1" width="500" height="500"></canvas>
+	 <script id="script" type="text/javascript">	
+	 	var canvas1 = document.getElementById("bezier1"); 
+		var p1 = new Processing(canvas1, bezier1); 
+	 </script>
+	 </p>
+	 
+	<div id="description">
+	<h3> Wyjaśnienie do aplikacji</h3>
+	<p>
+		Sterowanie tak jak poprzednio{'A', 'Z', 'X'}. Krzywa czerwona oznacza krzywą Béziera na planszy dwuwymiarowej.
+	</p>
+	<p>
+		Niebieska krzywa oznacza krzywą powstałą tylko ze składowych X punktów kontrolnych. Oś pozioma(<i>x</i>-ów) oznacza czas <i>t</i>, gdzie lewa krawędź to 0 a prawa to 1. Na osi pionowej została zaznaczona wartość <img src="./img/8.png" />
+	</p>
+	<p>
+		Analogicznie,  krzywa zielona  powstała poprzez oznaczenie osi pionowej (<i>y</i>-ów) jako czas, a osi poziomej jako wartość  <img src="./img/9.png" />. 
+	</p>
+	<p>
+		Krzywa czerwona jest "złożeniem" krzywej niebieskiej i zielonej.
+	</p>
+	<p>
+		Uwaga, punkty są (prawie) losowane. W szczególności oznacza to, że nie zawsze są one ułożone w kolejności od lewej do prawej, a krzywa może się układać "od końca".
+	</p>
+	
+	</div>
+
+	<h3> Zależność od czasu</h3>
+<p>
+	Dotychczas zajmowaliśmy się krzywą Béziera jako całością. Prześledźmy jak zachowuje się ona dla konkretnych wartości czasu.
+</p>
+
+ <canvas id="bezier2" width="500" height="500"></canvas>
+	 <script id="script" type="text/javascript">	
+	 	var canvas2 = document.getElementById("bezier2"); 
+		var p2 = new Processing(canvas2, bezier2); 
+	 </script>
+	 </p>
+	 
+	<div id="description">
+	<h3> Wyjaśnienie do aplikacji</h3>
+	<p>
+		Pozycja myszy na osi poziomej oznacza czas <i>t</i>, gdzie lewa krawędź to 0 a prawa to 1. </p>
+		<p>Czerwony punkt oznacza jeden z punktów krzywej powstały dla wybranego czasu. Krzywa zaznaczona na czerwono jest zbiorem punktów powstałych dla czasu [0, t] a na czarno dla pozostałych. 
+		Suma krzywej czerwonej i krzywej czarnej to cała krzywa Béziera. 
+	</p>
+	<p>
+		Klikając 'S', można wyświetlić krzywą zieloną i niebieską, obie o rolach identycznych jak w poprzedniej aplikacji. 
+	</p>
+	<p>
+		Pamiętaj, że klawiszami 'Z' i 'X' możesz regulować ilość punktów kontrolnych.
+	</p>
+	</div>
+	<p>
+		Proszę zwrócić uwagę na to jak zmienia się położenie tego punktu w zależności od czasu. Raz zmiany mogą być powolne, musi minąć dużo czasu aby punkt się znacząco przemieścił, a innym razem zmiany te mogą być tak gwałtowne, że przez rozdzielczość nie będziemy mogli płynnie przesuwać myszki tak aby zmiana położenia była płynna. Zjawisko to dużo prościej zbadać, jeżeli włączymy tryb z poprzedniej aplikacji wciskając przycisk 'S'(proszę pamiętać o aktywowaniu planszy kliknięciem). Widać wtedy, że szybki wzrost/spadek na zielonej/niebieskiej krzywej oznacza szybką zmianę krzywej czerwonej.
+	</p>
+	
+	<p>
+		Możemy rozpatrywać tutaj pochodną krzywej Béziera. Będzie ona również "krzywą Béziera", z tym że będzie się różnić wartościami dwumianu Newtona dla danego stopnia. Podobnie jak w przypadku wielomianów, pochodna krzywej Béziera ma stopnień o jeden mniejszy. 
+	</p>
+	
+	<p align="center">
+		<img src="./img/10.png" />
+	</p>
+	
+	<canvas id="bezier3" width="500" height="500"></canvas>
+	 <script id="script" type="text/javascript">	
+	 	var canvas3 = document.getElementById("bezier3"); 
+		var p3 = new Processing(canvas3, bezier3); 
+	 </script>
+	 </p>
+	 
+	<div id="description">
+	<h3> Wyjaśnienie do aplikacji</h3>
+	<p>
+	Uwaga, poprzednio lewy górny róg planszy miał współrzędne (0, 0) a prawy dolny (1, 1), czyli była rozpatrywana tylko jedna ćwiartka układu współrzędnych. Teraz, aby cały rysunek się zmieścił, potrzebne będą cztery ćwiartki, zatem lewy górny róg to teraz(-0.5, -0.5) a prawy dolny to (0.5, 0.5). 
+	</p>
+	
+	<p>
+	Na czerwono malowana jest krzywa Béziera, a na turkusowo pochodna
+	</p>
+	
+	</div>
+	
+	<p>
+		Widoczne jest, że punkt końcowy pochodnej(dla czasu <i>t</i> = 1) znajduje się w punkcie (0, 0). Pozycja punktu początkowego pochodnej jest zależna od pozycji pierwszego punktu kontrolnego względem drugiego. W szczególności można zaobserwować, że z niej wyjdzie. Jest jednak pewne że o ile wszystkie punkty kontrolne mieszczą się na planszy, to  wszystkie "punkty kontrolne" pochodnej będą się mieścić na planszy cztery razy większej(2 * 2). Wynika to z faktu że <img src="./img/11.png" /> może być maksymalnie dwa razy większe od rozmiaru jednego wymiaru planszy, na której znajdują się punkty kontrolne. 
+	</p>
+
+	<h3> Niektóre własności</h3>
+<p>
+	Początek krzywej jest w pierwszym punkcie kontrolnym, a koniec - w ostatnim.
+</p>
+<p>Wszystkie punkty należące do krzywej Béziera należą również do wnętrza otoczki wypukłej stworzonej z punktów kontrolnych tej krzywej.</p>
+
+<p>Krzywa Béziera jest odcinkiem wtedy i tylko wtedy, gdy wszystkie jej punkty są współliniowe.</p>
+
+	<h3> Konstrukcja geometryczna</h3>
+<p >
+Istnieje pewien sposób, który pozwala geometrycznie skonstruować krzywą Béziera. Wymaga on jednak sporej ilości pracy, więc konstruowanie krzywej za pomocą cyrkla i linijki, choć możliwe, nie byłoby najlepszym pomysłem.
+</p>
+
+<p>
+Wyobraźmy sobie, że łączymy odcinkami kolejne punkty kontrolne, dokładnie tak samo jak wyżej rysowały się linie pomocnicze. Powstałych odcinków będzie <i>N - 1</i>. Następnie na każdym z tych odcinków zaznaczamy punkt (C). Punkt ten będzie w takim miejscu, że <img src="./img/12.png" /a> (A - początek odcinka, B - koniec odcinka). <!--Gdy już obliczyliśmy wszystkie takie punkty C dla tych odcinków, to możemy o tych odcinkach nich zapomnieć.-->
+</p>
+<p>
+Następnie łączymy odcinkami wszystkie powstałe punkty C. (To ważne aby robić to w odpowiedniej kolejności). Powstałych odcinków będzie wtedy <i>N - 2</i>. A całą operacje możemy powtarzać, aż dojdziemy do momentu, gdy będziemy mieć tylko jeden punkt C, więc nie będziemy mogli zbudować odcinka. Punkt ten, będzie punktem należącym do krzywej Béziera, którego czas to <i>t</i>. 
+</p>
+	
+	<canvas id="bezier4" width="500" height="500"></canvas>
+	 <script id="script" type="text/javascript">	
+	 	var canvas4 = document.getElementById("bezier4"); 
+		var p4 = new Processing(canvas4, bezier4); 
+	 </script>
+	 </p>
+	 
+	<div id="description">
+	<h3> Wyjaśnienie do aplikacji</h3>
+	<p>
+		Pamiętaj, że klawiszami 'Z' i 'X' możesz regulować ilość punktów kontrolnych.
+	</p>
+	</div>
+
+	<h3> Krzywe sklejane</h3>
+<p>W praktyce krzywe Béziera wyższych stopni nie są łatwe do obliczeń. Trudno jest uzyskać kształt, krzywej który jest złożony i skompilowany. Równie trudno jest go człowiekowi efektywnie  go wymodelować. </p>
+<p>
+Okazuje się, że wystarczy w odpowiedni sposób "sklejać" krzywe Béziera trzeciego stopnia, tak aby uzyskać (prawie) dowolny kształt. 
+</p>
+
+<p>
+	Załóżmy że mamy <i>N</i> ( <i>N = 1+3k</i> gdzie <i>k</i> należy do liczb naturalnych) punktów. Krzywą Béziera trzeciego stopnia możemy narysować, używając czterech punktów kontrolnych. Narysujemy te krzywe tak, aby ich końce były ze sobą połączone, czyli czwarty (ostatni) punkt kontrolny krzywej <i>i</i>, musi być taki sam jak pierwszy punkt kontrolny krzywej <i>i+1</i>. 
+</p>
+<p>
+	Dla krzywej <i>i</i>-tej (indeksuję od zera):<br />
+	Pierwszy punkt kontrolny: <i>3*i</i> -ty punkt danych<br />
+	Drugi punkt kontrolny: <i>3*i+1</i> -ty punkt danych<br />
+	Trzeci punkt kontrolny: <i>3*i+2</i> -ty punkt danych<br />
+	Czwarty punkt kontrolny: <i>3*i+3</i> -ty punkt danych<br />
+</p>
+
+<canvas id="bezier5" width="500" height="500"></canvas>
+	 <script id="script" type="text/javascript">	
+	 	var canvas5 = document.getElementById("bezier5"); 
+		var p5 = new Processing(canvas5, bezier5); 
+	 </script>
+	 </p>
+	 
+	<div id="description">
+	<h3> Wyjaśnienie do aplikacji</h3>
+	<p>
+		Pamiętaj, że klawiszami 'Z' i 'X' możesz regulować ilość punktów kontrolnych.
+	</p>
+	<p>
+		Klawiszami {'Q', 'W', 'E'} można zmieniać tryb edycji.
+	</p>
+	<p>
+		Dla ułatwienia edycji, zmiana położeniua punktu, przez który przechodzi krzywa, przenosi również okoliczne punkty kontrolne.
+	</p>
+	</div>
+	<p>
+		Stosując taki model, możemy w prosty sposób stworzyć (prawie) dowolny kształt. Dodatkowo, co często może być przydatne, możemy tworzyć gwałtowne załamania krzywej, odpowiednio ustawiając punkty kontrolne.  
+	</p>
+	<p>
+		W edytorach używających krzywych Béziera najczęściej wyróżnia się trzy tryby edycji punktów kontrolnych: 
+	</p>
+	
+	<p>
+		<ol>
+		<li>Tryb ostry ('Q') - zmiana pozycji drugiego lub trzeciego punktu kontrolnego nie wpływa na pozycje innych punktów kontrolnych. Możliwe jest stworzenie ostrych zagięć i łączeń. </li>
+		
+		<li>Tryb symetryczny ('W') - zmiana pozycji drugiego punktu kontrolnego krzywej <i>i</i>, wpływa na pozycję trzeciego punktu kontrolnego krzywej  <i>i-1</i> (oraz analogicznie). Odległość trzeciego punktu kontrolnego od czwartego krzywej <i>i-1</i> pozostaje niezmienna, zmienia się tylko kąt pomiędzy nimi, tak aby drugi punkt kontrolny krzywej <i>i</i>, trzeci punkt kontrolny krzywej <i>i-1</i>, oraz czwarty punkt kontrolny krzywej <i>i-1</i> były współliniowe. Tworzy gładkie załamania, o ostrości, którą można regulować.   </li>
+		
+		<li>Tryb symetryczny gładki ('E') - podobnie jak w trybie symetrycznym, z tym że odległość trzeciego punktu kontrolnego od czwartego krzywej <i>i-1</i> jest równa odległości pomiędzy pierwszym a drugim punktem kontrolnym krzywej <i>i</i>. Umożliwia tworzenie gładkich łączeń pomiędzy krzywymi. </li>
+		</ol>
+	</p>
+	
+	
+	<h3> Wymierne krzywe Béziera</h3>
+<p>Charakteryzują się tym, że każdy punkt kontrolny ma przypisaną swoją wagę. Dzięki temu możliwe jest tworzenie jeszcze bardziej zaawansowanych kształtów. Używając krzywych wymiernych, możemy stworzyć nawet okrąg, podczas gdy w przypadku krzywych wielomianowych, możemy co najwyżej przybliżyć je do kształtu okręgu.</p>
+<canvas id="bezier6" width="500" height="500"></canvas>
+	 <script id="script" type="text/javascript">	
+	 	var canvas6 = document.getElementById("bezier6"); 
+		var p6 = new Processing(canvas6, bezier6); 
+	 </script>
+	 </p>
+	 
+	<div id="description">
+	<h3> Wyjaśnienie do aplikacji</h3>
+	<p>
+		Kliknij lewym przyciskiem myszki na dowolny punkt. Wciskaj przyciski 'N' lub 'M' podczas przenoszenia, aby zmniejszyć bądź zwiększyć wagę punktu kontrolnego. Możesz podejrzeć tę wartość w lewym górnym rogu podczas przenoszenia. 
+	</p>
+	<p>
+	Początkowo wartości wag są ustawione na 1. 
+	</p>
+	<p>
+		Pamiętaj, że klawiszami 'Z' i 'X' możesz regulować ilość punktów kontrolnych.
+	</p>
+	
+	</div>
+	<p>
+	
+	Zaobserwować można, że im większa waga, tym krzywa jest bardziej "przyciągana" do punktu kontrolnego, a im mniejsza, tym bardziej "odpychana". W szczególności wartość zero oznacza, że punkt nie jest brany pod uwagę. Gdy waga będzie ujemna, może powstać coś na kształt hiperboli, jednakże, ze względu na uroki metod numerycznych, będziemy widzieć jedną linie łączącą skrajne wartości(otaczające x=0 przy y=1/x)
+	</p>
+	<p align="center"><img src="./img/13.png" /></p>
+	<p>
+	Gdzie <img src="./img/14.png" /> to waga punktu <i>i</i>.
+	</p>
+	<p>
+		Gdy waga będzie rosła, krzywa zbliży się do tego punktu, jednak nigdy go nie osiągnie (pomijamy przypadek skrajnych punktów kontrolnych). Jest to bardzo ważna własność w przypadku stosowania krzywych Béziera do projektowania.
+	</p>
+	
+<h3> Zastosowanie</h3>
+<p>
+	Krzywe Béziera wykorzystywane są głównie w grafice komputerowej, projektowaniu, architekturze itp. Za ich pomocą można generować kształty, które potem da się łatwo edytować. Stanowią one podstawę grafiki wektorowej. Używane są między innymi w projektowaniu czcionek komputerowych oraz w animacjach komputerowych.
+</p>
+<p>
+	Wykorzystuje je oprogramowanie takie jak: Blender, GIMP, Inkscape czy CorelDraw.
+</p>
+<h3>Krzywe Béziera w animacji komputerowej</h3>
+<p>
+	Również tutaj znalazły szerokie zastosowanie ze względu na swoją naturę. Dzięki nim można np. projektować ścieżkę, po której będzie się przemieszczać obiekt czy kamera podczas animacji. Używając wysokich wag w przypadku krzywych wymiernych, można projektować ścieżkę, która prawie będzie przechodzić przez punkty kontrolne. 
+</p>
+<p>
+	Tworząc animacje komputerowe, bądź gry, potrzebujemy, aby wartości zmiennych płynnie zmieniały się w czasie, tak, abyśmy mogli kontrolować ich wartości początkowe, końcowe oraz sam przepływ. Wszystko to możemy łatwo osiągnąć i zaprojektować, używając właśnie krzywych Béziera. 
+</p>
+<p>Poniżej chciałbym przedstawić odsyłacze do kilku interaktywnych animacji wykorzystujących krzywe Béziera, stworzonych przezemnie w 2013r. 
+</p>
+
+<p align="center">
+	<a href="./viz/EfektBM.html" target="_blank">EfektBM</a>
+</p>
+<p  id="description">
+	Pięć wiodących trójkątów. Wierzchołek każdego ma własną losową krzywą Béziera z której pobiera wartości(x, y), oraz kolory (r, g, b, a). Specjalny efekt "wcześniejszych pozycji". (Uwaga, znika myszka)
+</p>
+<p align="center">
+	<a href="./viz/flower_for_you.html" target="_blank">Flower for you</a>
+</p>
+<p id="description" >
+	Występują dwie fazy. Pierwsza ma miejsce zaraz po kliknięciu myszką. Startuje wtedy dążąca do środka krzywa Béziera. Ruszając myszką, podczas gdy krzywa się rozwija, modyfikujemy mnożnik dla wartości dwumianów Newtona. Gdy krzywa się schowa, rozpoczyna się druga faza. Wyświetlana jest rozwijająca się kolorowa krzywa Lissajous oparta na spirali o stałym skoku z parametrami pobieranymi z położenia myszki. Można wrócić do fazy pierwszej klikając ponownie myszką.
+</p>
+<p align="center">
+	<a href="./viz/kleks.html" target="_blank">Kleks</a>
+</p>
+<p id="description">
+	Prawdziwe wyzwanie dla artystów. Komputer steruje trzema krzywymi Béziera.  Dwie z nich są łączone. Ty sterujesz krzywą która łączy się z trzecią pozostałą. Kliknięcie myszką resetuje plansze. 
+</p>
+<p align="center">
+	<a href="./viz/wstęp_do_kreatywności.html" target="_blank">Wstęp do kreatywności</a>
+</p>
+<p id="description">
+	Nie każdy ma zdolności manualne, ale każdy może być artystą. Wystarczy, że,  trzymając przycisk myszy, narysujesz dwie krzywe, a komputer zajmie się resztą.  Prawy przycisk myszy czyści plansze. Kolory są pobierane z losowych krzywych Béziera. 
+</p>
+
+<h3> Jak to jest zrobione </h3>
+Tworząc powyższe interaktywne aplikacje, wykorzystałem własność sklejanych krzywych Béziera, a mianowicie fakt, że zależne od siebie są tylko dwie kolejne krzywe składowe. Interesowały mnie tylko wartości dla danego czasu, a nie krzywa w całej swej okazałości, więc pozwoliłem sobie na zapominanie o poprzednich, niepotrzebnych już punktach kontrolnych i tworzenie nowych na ich miejsce w pamięci. Dzięki temu, animacja taka jak EfektBM może trwać bardzo długo(np. aż ktoś wyłączy komputer), bo używa stałej ilości pamięci. Poniżej przedstawiam przykład takich krzywych sklejanych, generowanych na bieżąco.
+<p>
+<canvas id="bezier7" width="500" height="500"></canvas>
+	 <script id="script" type="text/javascript">	
+	 	var canvas7 = document.getElementById("bezier7"); 
+		var p7 = new Processing(canvas7, bezier7); 
+	 </script>
+</p> 
+<div id="description">
+	<h3> Wyjaśnienie do aplikacji</h3>
+	<p>Aby się animowało, należy najechać myszką na planszę.
+	</p>
+</div>
+
+<h3>Krzywe Béziera i palety kolorów</h3>
+<p>
+	Dla prostego obrazowania załóżmy, że na planszy mamy dwie niezależne od siebie krzywe Béziera. Wartość x pierwszej krzywej w chwili t niech oznacza wartość koloru czerwonego. Dla koloru zielonego będzie to wartość y, a kolor niebieski i alfa niech wynika z x i y drugiej krzywej.
+</p>
+
+<p>
+<canvas id="bezier8" width="500" height="500"></canvas>
+	 <script id="script" type="text/javascript">	
+	 	var canvas8 = document.getElementById("bezier8"); 
+		var p8 = new Processing(canvas8, bezier8); 
+	 </script>
+</p> 
+<div id="description">
+	<h3> Wyjaśnienie do aplikacji</h3>
+	<p>
+		Tło przedstawia utworzoną paletę kolorów. Oś x-ów oznacza czas.
+	</p>
+	<p>
+		Przyciskiem 'H' można wyłączyć/włączyć tryb Alpha. Gdy jest on włączony, to kolor alfa jest pobierany ze składowej y-kowej niebieskiej krzywej. Gdy jest wyłączony, to jest on pomijany.
+	</p>
+	<p>
+		Przyciskiem 'J' można włączyć/wyłączyć kolorowanie całej planszy.
+	</p>
+	<p>
+		Przyciski {'A', 'Z', 'X'} działają.
+	</p>
+</div>
+<p>
+	Już samo pokolorowanie pionowych pasków kolorami z palety kolorów robi wrażenie. Najistotniejsze jest to, że tak utworzoną paletę, możemy zastosować do jednego z wielu algorytmów graficznych, które można pokolorować. Przykładem może być chociaż fraktal Mandelbrota lub atraktory. Jest to jednak temat na kolejną prezentację... 
+</p>
+<p align="right">
+	Dziękuję za uwagę, Ag<br />
+	1618.pl
+</p>
+
+<div style="font-size: 70%; margin-top:55px;">
+
+<div style="float:left;clear:all;width: 150px">
+<h3  style="font-size: 150%;font-weight: 300;">Bibliografia</h3>
+
+<p>
+	<li>[1] wg <a href="http://pl.wikipedia.org/wiki/Krzywe_Beziera">pl.wikipedia.org</a></li>
+	<li> <a href="http://en.wikipedia.org/wiki/B%C3%A9zier_curve">en.wikipedia.org</a></li>
+</p>
+</div>
+<div style="float:left;clear:all;width: 150px">
+<h3  style="font-size: 150%;font-weight: 300;">Użyte narzędzia</h3>
+<li><a href="http://ubuntu.com/">Ubuntu</a></li>
+<li><a href="http://processingjs.org/">Processing.js</a></li>
+<li><a href="http://www.codecogs.com/latex/eqneditor.php">Edytor równań</a></li>
+
+</div>
+<div style="float:left;clear:all;width: 200px">
+<h3  style="font-size: 150%;font-weight: 300;">Zobaczyć Matematykę</h3>
+	<li><a href="http://www.zobaczycmatematyke.pl">zobaczycmatematyke.pl</a></li>
+	<li>2.4.2014</li>
+</div>
+</div>
+</body>
+</html>

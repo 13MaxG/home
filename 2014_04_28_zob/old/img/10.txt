@@ -1,0 +1,1 @@
+\frac{d}{dt} B(t) = (N-1) \cdot \sum_{N-2}^{i = 0}( \binom{N-2}{i} \cdot t^i \cdot (1-t)^{N-2-i} \cdot (P_{i+1} - P_i)   )

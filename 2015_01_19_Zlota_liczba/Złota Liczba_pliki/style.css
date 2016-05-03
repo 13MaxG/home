@@ -1,0 +1,153 @@
+		body
+		{
+			background-color: #2F343B;
+			color: #2F343B;
+			text-shadow:0px 0px 1px #7E827A;
+			font-family: Georgia, sans-serif, Helvetica, Arial, sans-serif;
+		}
+		
+		.content
+		{
+			-webkit-border-radius: 16px;
+			border-radius: 16px;
+			
+			-webkit-box-shadow: 0px 0px 8px 1px #C77966;
+			box-shadow: 0px 0px 8px 1px #C77966;
+
+			text-align: justify;
+			width: 987px;
+			margin: 0 auto;
+			padding-bottom: 8px;
+			
+			background-color: #FFE6C7;
+			
+			font-size: 20px;
+			font-weight:400;
+		}
+		
+		
+		.header
+		{
+			width: 100%;
+			display:inline-block;
+			margin: 0 auto;
+			text-align: center;
+			color: #703030;
+			
+		}
+		.title
+		{
+
+			font-size: 64px;
+			text-shadow:0px 0px 8px #7E827A;
+			font-family: Georgia, Times, "Times New Roman", serif;
+		}
+		.desc
+		{
+			
+			font-size: 18px;
+			
+			text-shadow:0px 0px 3px #7E827A;
+			font-family: Georgia, Times, "Times New Roman", serif;
+		}
+		h1, h2, h3, h4, h5
+		{
+			text-shadow:0px 0px 2px #7E8AA2;
+			font-weight:400;	
+			padding-left: 8px;
+			padding-right: 8px;
+			color: #682321;
+			font-family: Georgia, Times, "Times New Roman", serif;
+			margin: 0;
+		}
+		
+		h1
+		{
+			padding-left: 8px;
+			padding-right: 8px;
+		}
+		h2
+		{
+			padding-left: 13px;
+			padding-right: 13px;
+		}
+		h3
+		{
+			padding-left: 21px;
+			padding-right: 21px;
+		}
+		a
+		{
+			color: #703030;
+		}
+		a:hover
+		{
+			color: #C77966;
+		}
+		
+		img
+		{
+			
+/* 			border:2px solid #7E8AA2; */
+			-webkit-box-shadow: 0px 0px 8px 1px #2F343B;
+			box-shadow: 0px 0px 8px 1px #2F343B;
+			margin: 0 auto;
+
+		}
+		img.margin
+		{
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			background-color: #FFF;
+ 			padding: 10px; 
+		}
+		img.displayed
+		{
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		
+		img.full
+		{
+		
+		}
+		
+		#code
+		{
+			margin: 15px auto;
+			padding: 10px;
+			background-color: #daaf9c;
+			border-style:double;
+			border-width:3px;
+			border-color: #703030;
+			color: #703030;
+			-webkit-box-shadow: 0px 0px 8px 1px #703030;
+			box-shadow: 0px 0px 8px 1px #703030;
+			
+		}
+		#XXX
+		{
+			background: #703030;
+			padding: 5px;
+		}
+		p{
+		padding-left: 34px;
+		padding-right: 34px;
+		}
+		iframe
+		{
+			-webkit-box-shadow: 0px 0px 8px 1px #2F343B;
+			box-shadow: 0px 0px 8px 1px #2F343B;
+		}
+		#source
+		{
+			font-size:14px;
+			text-align: center;;
+		}
+		#OD3 ol
+		{
+			margin-left: 150px
+			padding-left: 150px;
+		}

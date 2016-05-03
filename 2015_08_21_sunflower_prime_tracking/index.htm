@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+        "HTMLFiles/xhtml-math11-f.dtd">
+
+<!-- Created with the Wolfram Language for Students - Personal Use Only : www.wolfram.com -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>
+  Untitled (the Wolfram Language for Students - Personal Use Only : www.wolfram.com)
+ </title>
+ <link href="HTMLFiles/sunflower with prime tracking.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+<p class="Section">
+ <span class='TitleInline' style='font-style: italic;'>Mathematica</span><span class="TitleInline">&nbsp;&nbsp;playing with spirals and prime numbers</span>
+</p>
+
+
+
+<p class="Text">
+ I want to present few images from my last nootebook. It seems quite interesting stuff.
+</p>
+
+
+
+<p class="Subsubsection">
+ <span class="SectionInline">The function</span>
+</p>
+
+
+
+<p class="Text">
+ This function produces image of specific spiral. I used that spiral in many places (for example here http://13maxg.tumblr.com/post/121924282647/sunflower-created-by-voronoi-diagram-of-special)<br />seq - sequence of numbers, Prime for example<br />from, to - range of indexes<br />alpha -&nbsp;&nbsp;produces angle between two next points<br />func - function of distance<br />
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[seq_, from_, to_, alpha_, func_] := Module[{special}, special = Table[ { func[seq[i]] * Sin[2 * Pi/alpha * seq[i]], func[seq[i]] * Cos[2 * Pi/alpha * seq[i]]}, {i, from, to, 1}] ; Show[ Graphics[{PointSize[0.005], Blue, Point[special]}] ] ]</span>
+</p>
+
+<p class="Subsubsection">
+ Examples
+</p>
+
+
+
+<p class="Item">
+ Plot every number from 1 to 1000, with angle parameter 34. 
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[# &amp;, 1, 1000, 34, Sqrt]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_1.gif" alt="sunflower with prime tracking_1.gif" width="608" height="607" style="vertical-align:middle" />
+</p>
+
+<p class="Item">
+ Plot every number from 1 to 1000 with Golden Ratio as angle parameter
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[# &amp;, 1, 1000, GoldenRatio, Sqrt]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_2.gif" alt="sunflower with prime tracking_2.gif" width="608" height="606" style="vertical-align:middle" />
+</p>
+
+<p class="Item">
+ Same but with&nbsp;&nbsp;<span><span><span class="InputFormInline"> 3^(1/2)</span></span></span>
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[# &amp;, 1, 1000, Sqrt[3], Sqrt]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_3.gif" alt="sunflower with prime tracking_3.gif" width="608" height="609" style="vertical-align:middle" />
+</p>
+
+<p class="Item">
+ Plot&nbsp;&nbsp;squares of numbers between 1 and 1000
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[#^2&amp;, 1, 1000, GoldenRatio, Sqrt]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_4.gif" alt="sunflower with prime tracking_4.gif" width="605" height="640" style="vertical-align:middle" />
+</p>
+
+<p class="Item">
+ Plot prime numbers 
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[Prime, 1, 1000, GoldenRatio, Sqrt]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_5.gif" alt="sunflower with prime tracking_5.gif" width="592" height="596" style="vertical-align:middle" />
+</p>
+
+<p class="Subsubsection">
+ Playing with diffrent parameters
+</p>
+
+
+
+<p class="Item">
+ All numbers but Distance function is Natural Logarithm instead of Square root
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[#&amp;, 1, 1000, GoldenRatio, Log]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_6.gif" alt="sunflower with prime tracking_6.gif" width="584" height="584" style="vertical-align:middle" />
+</p>
+
+<p class="Item">
+ Pi as angle parameter
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[#&amp;, 1, 1000, Pi, Log]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_7.gif" alt="sunflower with prime tracking_7.gif" width="584" height="585" style="vertical-align:middle" />
+</p>
+
+<p class="Item">
+ E as angle parameter
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[#&amp;, 1, 1000, E, Log]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_8.gif" alt="sunflower with prime tracking_8.gif" width="584" height="584" style="vertical-align:middle" />
+</p>
+
+<p class="Subsubsection">
+ &ldquo;Strange&rdquo; parameters
+</p>
+
+
+
+<p class="Item">
+ Sine function used for distance
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[#&amp;, 1, 5000, E, Sin]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_9.gif" alt="sunflower with prime tracking_9.gif" width="584" height="583" style="vertical-align:middle" />
+</p>
+
+<p class="Item">
+ and a bit&nbsp;&nbsp;more of points
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[#&amp;, 1, 15000, E, Sin]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_10.gif" alt="sunflower with prime tracking_10.gif" width="584" height="583" style="vertical-align:middle" />
+</p>
+
+<p class="Item">
+ Same thing with Golden ratio as parameter
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[#&amp;, 1, 5000, GoldenRatio, Sin]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_11.gif" alt="sunflower with prime tracking_11.gif" width="584" height="584" style="vertical-align:middle" />
+</p>
+
+<p class="Item">
+ Again but with more points
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[#&amp;, 1, 30000, GoldenRatio, Sin]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_12.gif" alt="sunflower with prime tracking_12.gif" width="584" height="583" style="vertical-align:middle" />
+</p>
+
+<p class="Item">
+ <span><span><span class="InputFormInline">2^(1/2)</span></span></span> seems a bit less interesting
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[#&amp;, 1, 10000, Sqrt[2], Sin]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_13.gif" alt="sunflower with prime tracking_13.gif" width="584" height="583" style="vertical-align:middle" />
+</p>
+
+<p class="Subsubsection">
+ More and more fun
+</p>
+
+
+
+<p class="Text">
+ In images below im using smaller blue dots.
+</p>
+
+
+
+<p class="Item">
+ Simple example wth E parameter and Sqrt function
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[#&amp;, 1, 100000, E, Sqrt]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_14.gif" alt="sunflower with prime tracking_14.gif" width="763" height="762" style="vertical-align:middle" />
+</p>
+
+<p class="Item">
+ Same image but only prime numbers are shown
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[Prime, 1, 100000, E, Sqrt]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_15.gif" alt="sunflower with prime tracking_15.gif" width="815" height="814" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ As you can see here there are five &ldquo;spirals&rdquo;. I think its quite interesting that number 5 is here. E, Square root, Prime Numbers, and five spirals.&nbsp;&nbsp;Any ideas why?
+</p>
+
+
+
+<p class="Item">
+ Same&nbsp;&nbsp;image but with Golden ratio parameter
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[Prime, 1, 100000, GoldenRatio, Sqrt]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_16.gif" alt="sunflower with prime tracking_16.gif" width="815" height="813" style="vertical-align:middle" />
+</p>
+
+<p class="Item">
+ Logarithm function 
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[Prime, 1, 100000, E, Log]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_17.gif" alt="sunflower with prime tracking_17.gif" width="815" height="814" style="vertical-align:middle" />
+</p>
+
+<p class="Subsubsection">
+ Some exaples with fibonacci numbers
+</p>
+
+
+
+<p class="Item">
+ First standard
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">Fibonacci[50]</span>
+</p>
+
+<p class="Output">
+ <span class="InputFormInline">12586269025</span>
+</p>
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[ # &amp;, 1, 1000, GoldenRatio, Log]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_18.gif" alt="sunflower with prime tracking_18.gif" width="360" height="360" style="vertical-align:middle" />
+</p>
+
+<p class="Item">
+ Fibonacci numbers
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[Fibonacci, 1, 1000, GoldenRatio, Log]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_19.gif" alt="sunflower with prime tracking_19.gif" width="815" height="817" style="vertical-align:middle" />
+</p>
+
+<p class="Text">
+ This is another interesting example. We have here Fibonacci numbers marked on spiral with Golden Ratio parameter and Log function.&nbsp;&nbsp;Why is there that vertical segment? I don&rsquo;t know, but i know that is from first fibonacci to about 70.&nbsp;&nbsp;I don&rsquo;t know if is it <span style='font-style: italic;'>Mathematica</span> issue, becouse im using precise form of numbers. for example 100. point has position: 
+</p>
+
+
+
+<p class="Output">
+ <span class="InputFormInline">{Log[354224848179261915075] Sin[(708449696358523830150 &pi;)/GoldenRatio], Cos[(708449696358523830150 &pi;)/GoldenRatio] Log[354224848179261915075]}</span>
+</p>
+
+<p class="Item">
+ 75 of fibonacci numbers. 
+</p>
+
+
+
+<p class="Input">
+ <span class="InputFormInline">DrawFlower[Fibonacci, 1, 75, GoldenRatio, Log]</span>
+</p>
+
+<p class="Output">
+ <img src="HTMLFiles/sunflower with prime tracking_20.gif" alt="sunflower with prime tracking_20.gif" width="815" height="782" style="vertical-align:middle" />
+</p>
+
+
+
+
+<div style="font-family:Helvetica; font-size:11px; width:100%; border:1px none #999999; border-top-style:solid; padding-top:2px; margin-top:20px;">
+ <a href="http://www.wolfram.com/language/" style="color:#000; text-decoration:none;">
+  <span style="color:#555555">Created with the Wolfram Language</span> 
+ </a>
+</div>
+</body>
+
+</html>

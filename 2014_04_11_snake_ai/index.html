@@ -1,0 +1,57 @@
+<html>
+<head>
+	<meta charset="utf-8"> 
+	<title> Artificial Intelligence - Snake </title>
+	<link href="default.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<h1 id="title"> Artificial Intelligence  Snake </h1>
+	<h2 id="desc"> Andrzej Golonka</h2>
+	<a href="../../"> Back</a>
+	<p align="center">
+	<iframe width="480" height="360" src="//www.youtube-nocookie.com/embed/l2_CPB0uBkc" frameborder="0" allowfullscreen></iframe>
+	</p>
+	
+	
+	 <p>
+	 	<a href="./files/">Files</a> 
+
+	 </p>
+	 
+	<p>
+		This is classical snake game. The snake is crawling on board. When he eat an apple he gets a point and grows. When he eats himself, or he hits a wall, he dies. </p>
+		
+	<p>
+	  The Snake is controlled by a neural network, using method Q-Algorithm. Input layer has got 4 values: </p>
+	  <ol>
+	  	<li>the distance from head to apple</li>
+	  	<li>what is on the left from his head</li>
+	  	<li>what is on the front of his head</li>
+	  	<li>what is on the right from his head</li>
+	  </ol>
+	  <p>
+	  Output layer has one value - a rating of that stage. The simulation from video has 8 hidden neurons. 
+	</p>
+	
+	<p>
+		In each moment, snake can do one of three moves: left, front, right. He "checks" a rating of each movement, and choosing the best (maximal). After every move, the move is evaluating by a external function. If he eat apple, he  get value 1. If he does wrong move, he  get value -1. If he do normal move, he's rating is the distance from his head to the apple multiplied by -1 and divided by the lenght of the diagonal of the board.
+	</p>
+	
+	<p>
+		Knowledge of the snake is not ideal. It depends of many factors. On the video the snake was trained by hidden 10 000 000 moves. It is possible to get better results, but it is hard to choose the right values of parameters of learning the neural network. Moreover, this model will never be "ideal", because of the size of input values. The snake can only "smell" the apple(near, far), and see what is next to his face. It leads to problem of eating himself when he is large, he just go there, where the apple "smells" stronger. The snake is <i>greddy</i>.
+	</p>
+	
+	<p>
+		To make this program I have used the <a href="http://leenissen.dk/fann/wp/">FANN</a> Library and <a href="http://sfml-dev.org/">SFML</a>
+	</p>
+
+	
+	<p>
+		9-11.4.2014
+	</p>
+	
+	
+	
+</div>
+</body>
+</html>

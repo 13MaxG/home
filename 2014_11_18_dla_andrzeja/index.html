@@ -1,0 +1,265 @@
+<html>
+<head>
+	<title>logic!</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF8">
+	<script src="./processing.min.js"></script>
+</head>
+<body style="width:100%; height:100%;margin:0; padding:0;" onload="res()" onresize="res()">
+
+<canvas style="display: block; image-rendering: -webkit-optimize-contrast !important; " id="canvas" tabindex="0" width="986" height="586"></canvas>
+
+
+<script id="script" type="text/javascript">
+
+function vector(x, y) {
+    this.x = x;
+    this.y = y;
+}
+
+var startA = new vector(-100, 0);
+var startB = new vector(100, 0);
+var startR = 50;
+var vizA = 0;
+var ddA = 0;
+var LEN = 75;
+//3.0/4.0 * Math.PI
+function Rgb(r, g, b) {
+    this.r = r;
+    this.g = g;
+    this.b = b;
+}
+function Hsv(h, s, v) {
+    this.h = h;
+    this.s = s;
+    this.v = v;
+}
+var EPS = 0.00001;
+function cmp(a, b)
+{
+	if(b-a >=-EPS && b-a <= EPS)
+		return true;
+	else
+		return false;
+}
+function toRgb(colour) // colour Hsv
+{
+	if(cmp(colour.s, 0))
+	{
+		return new Rgb(colour.v, colour.v, colour.v);
+	} else
+	{
+		if(cmp(colour.h,360))
+			colour.h = 0;
+		else
+			colour.h /= 60.0;
+			
+		var i = Math.floor(colour.h);
+		var f = colour.h - i;
+		var m = colour.v*(1.0 - colour.s);
+		var n = colour.v*(1.0 - colour.s * f);
+		var k = colour.v*(1 - colour.s * (1.0 - f));
+		
+		switch(i)
+		{
+			case 0:
+				return new Rgb(colour.v, k, m);
+			break;
+			case 1:
+				return new Rgb(n, colour.v, m);
+			break;
+			case 2:
+				return new Rgb(m, colour.v, k);
+			break;
+			case 3:
+				return new Rgb(m, n, colour.v);
+			break;
+			case 4:
+				return new Rgb(k, m, colour.v);
+			break;
+			case 5:
+				return new Rgb(colour.v, m, n);
+			break;
+		}
+	}
+}
+
+
+
+
+function rysuj(processing, a, b, R, i, n)
+{
+	
+	if(i < n)
+	{
+		i++;
+		
+		var s = new vector((a.x+b.x)/2.0, (a.y+b.y)/2.0);
+var r = Math.sqrt( (b.x - a.x)*(b.x - a.x) + (b.y - a.y)*(b.y - a.y) )/2.0;
+		var alfa = Math.atan2(b.y-a.y, b.x - a.x);
+
+		var c = new vector(s.x + r * Math.cos(3.0/4.0 * Math.PI-alfa), 
+				s.y - r * Math.sin(3.0/4.0 * Math.PI-alfa));
+		var d = new vector(s.x - r * Math.cos(3.0/4.0 * Math.PI+alfa), 
+				s.y - r * Math.sin(3.0/4.0 * Math.PI+alfa));
+
+		var e = new vector(s.x + (r + R)*Math.cos(Math.PI/2.0-alfa),
+				   s.y - (r + R)*Math.sin(Math.PI/2.0-alfa));
+		
+
+		processing.line(a.x, a.y, b.x, b.y);
+		
+		var anglecolor1 = ddA+vizA * 180 / Math.PI - i / (n+1) * 180;
+		while(anglecolor1 > 360) anglecolor1 -= 360;
+		while(anglecolor1 < 0) anglecolor1 += 360;
+		
+			var colour1 = new Hsv(anglecolor1, 1, 1);
+			var color1 = toRgb(colour1);
+			processing.fill(color1.r*255, color1.g*255, color1.b*255);
+		
+		processing.beginShape();
+			processing.vertex(c.x, c.y);
+			processing.vertex(d.x, d.y);
+			processing.vertex(e.x, e.y);
+		processing.endShape(processing.CLOSE);
+		
+		var anglecolor2= ddA+vizA * 180 / Math.PI - i / (n+1) * 180+10;
+		while(anglecolor2 > 360) anglecolor2 -= 360;
+		while(anglecolor2 < 0) anglecolor2 += 360;
+			var colour2 = new Hsv(anglecolor2, 1, 1);
+			var color2 = toRgb(colour2);
+			processing.fill(color2.r*255, color2.g*255, color2.b*255);
+		
+		var N = n-i;
+		if(N<3)N=3;
+		processing.beginShape();
+		alfa += Math.PI;
+		var dj = 1.0/N;
+		var maxj = alfa + Math.PI;
+		for(var j = alfa; j <=maxj ; j += dj)
+		{
+			processing.vertex(s.x + r * Math.cos(j), s.y + r * Math.sin(j));
+		}
+		processing.vertex(s.x + r * Math.cos(maxj), s.y + r * Math.sin(maxj))
+		processing.endShape(processing.CLOSE);
+		
+		
+		
+		rysuj(processing, c, e, R/2, i, n);
+		rysuj(processing, e, d, R/2, i, n);
+
+
+	}
+	return;
+}
+
+var pressed = false;
+var width = 986, height=586;
+var sketch = new Processing.Sketch();
+	
+sketch.attachFunction = function(processing) {
+	processing.setup = function() {
+			processing.size(width, height);
+			processing.fill(255);
+			processing.stroke(processing.color(44,48,32));
+			processing.background(0);
+			processing.cursor()
+			//processing.frameRate(25);
+			//processing.noLoop()
+		};
+	processing.draw = function() {
+var startTimer = new Date(); 
+
+		processing.fill(0, 0, 0, 255);
+		processing.rect(-2, -2, width+2, height+2);
+		// Układ współrzędnych. środek
+		processing.translate(processing.width/2.0, processing.height/2.0);
+		// Dodatnie na górze
+
+		
+			
+			
+			
+		processing.stroke(255, 127);
+		rysuj(processing, 
+		new vector(0 + LEN*Math.cos(0/3.0 *2.0 * Math.PI +vizA) , LEN*Math.sin(0/3.0 *2.0 * Math.PI+vizA)), 
+		new vector(0 + LEN*Math.cos(1/3.0 *2.0 * Math.PI+vizA) , LEN*Math.sin(1/3.0 *2.0 * Math.PI+vizA)), 
+		startR, 0, 7);
+rysuj(processing, 
+		new vector(0 + LEN*Math.cos(1/3.0 *2.0 * Math.PI+vizA) , LEN*Math.sin(1/3.0 *2.0 * Math.PI+vizA)), 
+		new vector(0 + LEN*Math.cos(2/3.0 *2.0 * Math.PI+vizA) , LEN*Math.sin(2/3.0 *2.0 * Math.PI+vizA)), 
+		startR, 0, 7);
+rysuj(processing, 
+		new vector(0 + LEN*Math.cos(2/3.0 *2.0 * Math.PI+vizA) , LEN*Math.sin(2/3.0 *2.0 * Math.PI+vizA)), 
+		new vector(0 + LEN*Math.cos(3/3.0 *2.0 * Math.PI+vizA) , LEN*Math.sin(3/3.0 *2.0 * Math.PI+vizA)), 
+		startR, 0, 7);
+
+		var anglecolor3= ddA+vizA * 180 / Math.PI -5 ;
+		while(anglecolor3 > 360) anglecolor3 -= 360;
+		while(anglecolor3 < 0) anglecolor3 += 360;
+			var colour3 = new Hsv(anglecolor3, 1, 1);
+			var color3 = toRgb(colour3);
+			processing.fill(color3.r*255, color3.g*255, color3.b*255);
+		
+		
+		
+		processing.beginShape();
+			processing.vertex(LEN*Math.cos(0/3.0 *2.0 * Math.PI +vizA), LEN*Math.sin(0/3.0 *2.0 * Math.PI+vizA));
+			processing.vertex(0 + LEN*Math.cos(1/3.0 *2.0 * Math.PI+vizA), LEN*Math.sin(1/3.0 *2.0 * Math.PI+vizA));
+			processing.vertex(LEN*Math.cos(2/3.0 *2.0 * Math.PI+vizA), LEN*Math.sin(2/3.0 *2.0 * Math.PI+vizA));
+		processing.endShape(processing.CLOSE);
+
+	var passed = new Date() - startTimer; 
+	var dt = passed/1000;
+	
+	if(!pressed)vizA += Math.PI/6 * dt;
+	}
+	processing.mouseMoved = function() {
+		//if(processing.mouseButton == processing.LEFT)
+		{
+			startR = (((processing.mouseX) / (width)) * LEN);
+			ddA =  (processing.mouseY )/ (height) * 360;
+			//processing.redraw();
+			
+		}		
+	}
+	processing.mousePressed = function()
+	{
+		pressed = true;
+		//processing.redraw();
+		//if(processing.mouseButton == processing.LEFT)
+		
+	}
+	processing.mouseReleased = function()
+	{
+		pressed = false;
+		//processing.redraw();
+		//if(processing.mouseButton == processing.RIGHT)
+	}
+};
+
+
+
+var canvas = document.getElementById("canvas");
+var p =new Processing(canvas, sketch);
+function res()
+{
+	var canvas = document.getElementById('canvas'),
+	context = canvas.getContext('2d');
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	
+	width = canvas.width;
+	height = canvas.height;
+
+	 // instalacja szkicu
+	if(p !== undefined) p.exit();
+	 	delete p;
+
+	 p = new Processing(canvas, sketch);
+}
+
+</script>
+
+
+</body>
+</html>

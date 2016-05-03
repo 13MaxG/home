@@ -1,0 +1,67 @@
+<h3> Krzywe sklejane</h3>
+<p>
+	Jako, że we wzorze na krzywą Beziera występują dwumiany Newtona, i to na dodatek o stałej jednej zmiennej, możemy utworzyć trójkąt Pascala, taki żeby odczytać jakie ma wartości <i>n</i>-ty wiersz. 
+</p>
+<p>Jest to oczywiście swego rodzaju usprawnienie optymalizacyjne, jednakże w praktyce krzywe Beziera wyższych stopni nie są łatwe do obliczeń. Trudno jest uzyskać kształ krzywej który jest złożony i skompilowany. Równie trudno jest go efektywnie wymodelować człowiekowi. </p>
+<p>
+Okazuje się, że wystarczy w odpowiedni sposób "sklejać" krzywe Beziera trzeciego stopnia, tak aby uzyskać (prawie) dowolny kształt. 
+</p>
+
+<p>
+	Założmy że mamy <i>N = 6</i> (N mod 2 = 0) punktów <b>danych</b>. Krzywą Beziera trzeciego stopnia możemy stworzyć mając dane cztery punkty <b>kontrolne</b>. Na podstaie tych sześciu punktów danych narysujemy dwie krzywe Beziera, ale będziemy do tego potrzebować łącznie ośmiu punktów kontrolnych. Dlatego "wyliczymy" je sobie na podstawie innych, w taki sposób: (uwaga, numeruję od zera)
+</p>
+<p> Pierwsza krzywa: <br />
+Pk0 (pierwszy punkt kontrolny) = D0 (pierwszy punkt danych)<br />
+Pk1(drugi punkt kontrolny) =  D1(drugi punkt danych)<br />
+Pk2 = D2 - ( D3 - D2 ) <br />
+Pk3 = D3<br />
+</p>
+<p> Druga krzywa: <br />
+Dk0 = D2 <br />
+Dk1 =  D3<br />
+Dk2 = D2 - ( D5 - D4 ) <br />
+Dk3 = D4<br />
+</p>
+<p>
+	Operacja pojawiająca się przy obliczaniu trzeciego punktu kontrolnego(PK2, Dk2) jest to nic innego jak prosta operacja na wektorach.  Powoduje ona na przykład powstanie punktu Pk2, który jest obrazem punktu D3 w symetrii względem punktu D2.  
+</p>
+
+<p>
+	Uogólniając, dla N (N mod 2 = 0) punktów danych, możemy narysować (N/2 - 1 ) krzywych. </p>
+	Pierwszy punkt kontrolny <i>i</i>-tej(indeksujemy od zera) krzywej to (i * 2)-ty punkt danych. <br />Drugi punkt kontrolny <i>i</i>-tej krzywej to (i * 2 +1)-ty punkt danych.<br /> Czwarty punkt kontrolny <i>i</i>-tej krzywej to (i * 2 + 3)-ty punkt danych. <br />
+	Trzeci punkt kontrolny <i>i</i>-tej krzywej powstaje w wyniku symtetrii punktu (i * 2 + 3)-tego danych  względem  (i * 2 + 4) danych.
+</p>
+<canvas id="bezier5" width="500" height="500"></canvas>
+	 <script id="script" type="text/javascript">	
+	 	var canvas5 = document.getElementById("bezier5"); 
+		var p5 = new Processing(canvas5, bezier5); 
+	 </script>
+	 </p>
+	 
+	<div id="description">
+	<h3> Wyjaśnienie do aplikacji</h3>
+	<p>
+		Pamiętaj, że klawiszami 'Z' i 'X' możesz regulować ilość punktów kontrolnych.
+	</p>
+	<p>
+		Punkty oznaczone na szaro są punktami trzecimi krzywych.
+	</p>
+	</div>
+	<p>
+		Dzięki krzywym sklejanym możemy łatwiej kontrolować kszałt naszej krzywej. W szczególności pomaga nam to, że jeżeli przenośimy punkt dany o parzysym numerze, to dla wygodnej edycji dobrze jest przenieść równolegle też punkt dany o numerze o jeden większym. Spowoduje to wizualnie tutaj przeniesienie trzech punktów, bo każdy szary(kontrolny) powstaje na podstawie dwóch innych(danych)
+	</p>
+	
+	<p>
+	Powodować to może pewien niedosyt, gdyż edytując jakiś punkt dany o nieparzystym numerze, odpowiadający mu szary punkt przenosi się symetrycznie.  W rzeczywistości wykorzystywana tutaj jest jednokładność o środku w punkcie danym przystym i, skali k = -1 od punktu danego i+1. Jeżeli zmienimy skalę, na więszą, bądź mniejszą, będziemy mogli uzyskać większą kontrole i uzyskać jeszcze bardziej zaawansowane kształty.  Jednakże trzeba tutaj uważać, bo zbyt mała skala może spowodować że krzywa może się ostro załamywać. 
+	</p>
+	<p>
+		W praktyce edytory do krzywych Beziera oferują różne możliwości przekształceń punktów. Pierwszy z nich był już pokazany w poprzedniej aplikacji. Kolejny o którym wspomniałem to taki, w którym  wystepuje inna skala jednokładności niż -1. Można to opisać zdecydowanie prościej, mianowicie  punkty Pk3, Pk4, Dk1 (i wszytskie analogiczne) leżą na tej samej prostej, ale w różnych odległościach od siebie. W poniższej aplikacji możemy je edytować w ten sposób. 
+	</p>
+
+<canvas id="bezier6" width="500" height="500"></canvas>
+	 <script id="script" type="text/javascript">	
+	 	var canvas6 = document.getElementById("bezier6"); 
+		var p6 = new Processing(canvas6, bezier6); 
+	 </script>
+	 </p>
+	

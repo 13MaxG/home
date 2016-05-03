@@ -1,0 +1,192 @@
+<html>
+<head >
+  <script src="processing.js"></script>
+  
+</head>
+
+<body style = "width:100%; height:100%;margin:0; padding:0;" onresize="res()">
+
+		<canvas style="display:block; margin:10 auto;" id="canvas"    ></canvas>
+
+		<script id="script" type="text/javascript">
+		var fitCreator = new Processing.Sketch(); // Deklaracja nowego szkicu ProcessingJS
+		var width = 600;
+		var height = 600;
+			
+		fitCreator.attachFunction = function(processing) {
+			// Zmienne i funkcje użytkowe
+			var FPS = 30;
+			var DT = 1.0 / FPS;
+			
+
+			
+			var xMousePositionPixels = 0;
+			var yMousePositionPixels = 0;
+
+			// ------------------------------------------------
+			// "Konstruktor"
+			processing.setup = function() {
+				// Ustawienia ogólne
+				processing.size(width, height); 
+				processing.frameRate(FPS);
+				processing.smooth();
+				
+				processing.background(0);
+				processing.fill(255);
+				processing.rect(0, 0, width, height);
+						var font = processing.loadFont("FreeMono.ttf"); 
+
+				processing.textFont(font); 
+			}
+		
+				var a = 1;
+				var b = 2;
+				var c = 1;
+				var d = 2;;
+				var e = 1;
+				var f = 1.5;
+				var g = 1;;
+				var h = 3;
+				
+				var x0 = 1;
+				var y0 = 1;
+				var z0 = 1;
+				
+				var clear = false;
+				
+				var ips =  width * height * 0.00125;
+				
+				var scale = 0.35;
+			// Grafika + obliczenia
+			processing.draw = function() {
+				// Czyść ekran
+				processing.fill(50);
+				processing.rect(1, 1, 60, 55);
+				processing.fill(255);
+				processing.text( "a = " + b.toFixed(2).toString() , 5, 12);
+				processing.text( "b = " + d.toFixed(2).toString() , 5, 26);
+				processing.text( "c = " + f.toFixed(2).toString() , 5, 40);
+				processing.text( "d = " + h.toFixed(2).toString() , 5, 54);
+				if(clear)
+				{
+					processing.fill(255, Math.round(55*Math.random())+55);
+					
+				} else
+				{
+					processing.fill(255, Math.round(2*Math.random()+1));
+				}
+				processing.rect(-1, -1, width+1, height+1);
+				
+				//processing.line(0, 0, xMousePositionPixels, xMousePositionPixels);
+				for(var i = 0; i < ips; i++)
+				{
+					processing.strokeWeight(3);
+					if(clear)
+						processing.stroke(0, 100);
+					else 
+						processing.stroke(0, 50);
+					var x,y;
+				
+					x = a * Math.sin( b * (y0 )  ) +  c *Math.cos( d * (x0 ) );
+		    		y = e * Math.sin( f * (x0 ) ) + g*Math.cos( h * (y0) );
+				
+				
+					 processing.point(  width/2 + ((x)/2 ) * width * scale, height/2 +  (y)/2 * height * scale);
+					 
+					z = Math.sin(x0) + Math.cos(z0);
+				
+					x0 = x;
+					y0 = y;
+					z0 = z;
+				
+				}
+				if(clear) clear = false;	
+			}
+			// Wejście
+			processing.mouseMoved = function() {
+				xMousePositionPixels = processing.mouseX;
+				yMousePositionPixels = processing.mouseY;
+			}
+			processing.mouseDragged = function() {
+				xMousePositionPixels = processing.mouseX;
+				yMousePositionPixels = processing.mouseY;
+				
+				if (processing.mouseButton == processing.LEFT) {
+				//alert(b);
+				
+					//b = ( 2+ ( xMousePositionPixels / width  - 0.5 )*2) ;
+					//h = (2+ ( yMousePositionPixels / height  - 0.5)*2) ;
+					
+					b += (processing.mouseX - processing.pmouseX)/width;
+					h += (processing.mouseY- processing.pmouseY)/height;
+					
+				} 
+				if (processing.mouseButton == processing.RIGHT) {
+					d += (processing.mouseX - processing.pmouseX)/width;
+					f += (processing.mouseY- processing.pmouseY)/height;
+					//d = ( 2+ ( xMousePositionPixels / width  - 0.5)*2) ;
+					//f = (2+ ( yMousePositionPixels / height  - 0.5)*2) ;
+					
+					
+					//a = ( +1 (0.5 - xMousePositionPixels / width )*2) ;
+					//g = (+1 (0.5 - yMousePositionPixels / width )*2) ;
+				} 
+			
+				//processing.background(255);
+				clear = true;
+			}
+		}
+		
+			//var canvas = document.getElementById("canvas"); // Pobranie canvas w którym będzie wyświetlany szkic
+		//var p = new Processing(canvas, fitCreator); // instalacja szkicu
+		var  p;// = new Processing(canvas, fitCreator);
+	function res()
+	{
+	//alert("X");
+		var canvas = document.getElementById('canvas'),
+		context = canvas.getContext('2d');
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		
+		width = canvas.width - 50;
+		height = canvas.height - 75;
+		//delete p;
+		 // instalacja szkicu
+		if(p !== undefined) p.exit();
+		 delete p;
+		  p = new Processing(canvas, fitCreator);
+		p.updateSize(width, height);
+		
+	}
+	res();
+	
+	</script>
+	<h1 style="margin: 8 21;"> Trygonometric attractor </h2>
+	<img style="margin: 8 21;" src = "fb.png" width="25%" height="25%" align="right"/>
+	<p style="margin: 8 21;">
+		Please move your mouse during holding LEFT or RIGHT mouse button.  <br />
+		If your computer have problems with computing, please make you window smaller. 
+	</p>
+	
+	<h2 style="margin: 8 21;">
+		Formula:  
+	</h2>
+	<p style="margin: 8 21;">
+		<img src = "formula_x.png" /> 
+	</p>
+	<p style="margin: 8 21;">
+		<img src = "formula_y.png" />
+	</p>
+	<p></p>
+	<p style="margin: 8 21;">
+		Todo: desc
+	</p>
+	<p style="margin: 8 21;"></p>
+	<br /><br /><br />
+	<p style="margin: 8 21;"> Please see my project using the same formula:  http://reddy.1618.pl/portfolio-items/sandra/
+	<hr />
+	<p style="margin: 21 auto; text-align: center; " >
+		Andrzej Golonka  2013 <br /> 1618.pl
+	</p>
+</body>
+</html>

@@ -1,0 +1,844 @@
+<html>
+<head>
+	<title>logic!</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF8">
+	<script src="./processing.min.js"></script>
+	<script src="./colors.js"></script>
+</head>
+<body style="width:100%; height:100%;margin:0; padding:0;" onload="res()" onresize="res()">
+
+<canvas style="display: block; image-rendering: -webkit-optimize-contrast !important; z-index:0" id="canvas" tabindex="0" width="986" height="586"></canvas>
+
+
+<div id ="disp" style="position:fixed; top:100; left: 100;width: 550; height: 550; margin: 0 auto; background: black; z-index:-1" onclick="hide()">
+<img id="image" src="./img/welcome.png" /> 
+</div>
+
+<script id="script" type="text/javascript">
+var width = 986, height=586;
+var sketch = new Processing.Sketch();
+	
+function vector(x, y) {
+    this.x = x;
+    this.y = y;
+}
+
+function Arg(z)
+{
+	return Math.atan2(z.y, z.x);
+}
+function Abs(z)
+{
+	return Math.sqrt(z.x*z.x + z.y*z.y);
+}
+
+
+
+var table = new Array(5);
+for(var i = 0; i < 5; i++) 
+{
+	table[i] = new Array(5);
+	for(var j = 0; j < 5; j++)
+		table[i][j] = 0;
+}
+
+function put1(x, y)
+{
+	if(x >= 0 && x < 5 && y >= 0 && y < 5)
+		table[x][y] = !table[x][y];
+}
+function put(x, y)
+{
+	if(x >= 0 && x < 5 && y >= 0 && y < 5)
+		table[x][y] = !table[x][y];
+		
+	if(x+1 >= 0 && x+1 < 5 && y >= 0 && y < 5)
+		table[x+1][y] = !table[x+1][y];
+		
+	if(x >= 0 && x < 5 && y+1 >= 0 && y+1 < 5)
+		table[x][y+1] = !table[x][y+1];
+		
+	if(x-1 >= 0 && x-1 < 5 && y >= 0 && y < 5)
+		table[x-1][y] = !table[x-1][y];
+		
+	if(x >= 0 && x < 5 && y-1 >= 0 && y-1 < 5)
+		table[x][y-1] = !table[x][y-1];
+}
+
+var boardWidth = 500;
+var boardHeight = 500;
+
+
+function F(z) //1 * (z-a)*(z-b)...
+{
+	var x = new vector(1, 0);
+	
+	for(var i = 0; i < 5; i++)
+	{
+		for(var j = 0; j < 5; j++)
+		{
+			if(table[i][j] == 1)
+			{
+				// a: x.x 					      , b: x.y
+				// c: z.x - (i/(5-1))*2.0-1.0 , d: z.y -  (j/(5-1))*2.0-1.0
+				var c = z.x - ((i/(5-1))*2.0-1.0); var d = z.y -  ((j/(5-1))*2.0-1.0);
+				var y = new vector(x.x * c - x.y * d,  x.y * c + x.x * d);
+				x.x = y.x;
+				x.y = y.y;
+			}
+		}
+	}
+	
+	return x;
+}
+
+var actions = {};
+actions["0000000000000000000000000"] = "./img/start.png";
+
+
+var actionsTwo = {};
+actionsTwo["1111111111111111111111111"] = "./img/middle.png";
+actionsTwo["0000000000000000000000000"] = "./img/end.png";
+
+var active = false;
+var stageTwo = false;
+
+function hide()
+{
+document.getElementById("disp").style.zIndex=-1;active = false;
+document.getElementById("image").src="./img/loading.png";
+}
+
+function checkAction()
+{
+	var key = "";
+	for(var j = 0; j < 5; j++)
+	for(var i = 0; i < 5; i++)
+	{
+		if(table[i][j] == 1)
+			key = key.concat("1");
+		else 
+			key = key.concat("0");
+	}
+	
+	if(stageTwo == false && key == "1111111111111111111111111")
+	{
+		stageTwo = true;
+	}
+	if(stageTwo == true && key == "0000000000000000000000000")
+	{
+		stageTwo = true;
+		won = true;
+		
+		//initArrayBIGxBIG();
+		
+	}
+	
+	if(stageTwo == false)
+	{
+		if(key in actions)
+		{
+			document.getElementById("image").src=actions[key];
+			document.getElementById("disp").style.zIndex=1;
+			active = true;
+			setTimeout( hide, 5000);
+		}
+	}	
+	if(stageTwo == true)
+	{
+		if(key in actionsTwo)
+		{
+			document.getElementById("image").src=actionsTwo[key];
+			document.getElementById("disp").style.zIndex=1;
+			active = true;
+			if(!won)
+				setTimeout( hide, 10000);
+		}
+	}
+}
+
+
+var dmX = 0;
+var dmY = 0;
+var patternSizeX = 50;
+var patternSizeY = 100;
+var visualKox = false;
+var fancyBackground = false;
+
+var array25x25 = new Array(25);
+for(var i = 0; i < 25; i++) 
+{
+	array25x25[i] = new Array(25);
+	for(var j = 0; j < 25; j++)
+		array25x25[i][j] = new Rgb(0, 0, 0);
+}
+
+function updateArray25x25()
+{
+		for(var i = 0; i < 25; i++)
+		{
+			for(var j = 0; j < 25; j++)
+			{
+				// vector on complex plane
+				var z = new vector(((i-2)/(25-5))*2.0-1.0, 
+													(((j-2)/(25-5))*2.0-1.0));
+				var v = F(z); // value at the point
+				
+				// color of the point
+				var col = new Hsv(0, 0, 0);
+				col.h = Arg(v) * 180.0 / Math.PI;
+				while(col.h < 0) col.h+=360;
+				while(col.h > 360) col.h-=360;
+				var r = Math.log(Abs(v)+1);
+				col.s =   1 - 0.05/Math.abs(Math.log(0.1+(2.0*Math.PI*Abs(v))));	
+				col.v =  0.1/Math.log(1.0+Math.sin(((Math.sqrt(2)+1)*Math.PI*Math.log(1+Abs(v)))));
+				
+				array25x25[i][j] = toRgb(col);
+				//processing.fill(c.r*255, c.g*255, c.b*255);
+			}
+		}
+}
+updateArray25x25();
+
+var BIGPIC = 100;
+var arrayBIGxBIG;
+
+	var arrayBIGxBIG = new Array(BIGPIC);
+	for(var i = 0; i < BIGPIC; i++) 
+	{
+		arrayBIGxBIG[i] = new Array(BIGPIC);
+		for(var j = 0; j < BIGPIC; j++)
+			arrayBIGxBIG[i][j] = new Rgb(0, 0, 0);
+	}
+	
+
+
+function updateArrayBIGxBIG()
+{
+	var pP = 100;
+			var pS = boardWidth/pP;
+			for(var i = 0; i < pP; i++)
+			{
+				for(var j = 0; j < pP; j++)
+				{
+					// vector on complex plane
+					var z = new vector((i/pP-0.5)*2.4, 
+														(j/pP-0.5)*2.4);
+					var v = F(z); // value at the point
+				
+					// color of the point
+					var col = new Hsv(0, 0, 0);
+					col.h = Arg(v) * 180.0 / Math.PI;
+					while(col.h < 0) col.h+=360;
+					while(col.h > 360) col.h-=360;
+					var r = Math.log(Abs(v)+1);
+					col.s =   1 - 0.05/Math.abs(Math.log(0.1+(2.0*Math.PI*Abs(v))));	
+					col.v =  0.1/Math.log(1.0+Math.sin(((Math.sqrt(2)+1)*Math.PI*Math.log(1+Abs(v)))));
+					arrayBIGxBIG[i][j] = toRgb(col);
+					}
+				}
+}
+
+updateArrayBIGxBIG();
+function drawGame(processing)
+{
+		processing.fill(255);
+		processing.rect(-280, -280, 560, 560);
+		processing.fill(50);
+		processing.rect(-275, -274, 550, 549);
+		
+		if(!visualKox)
+		{
+		processing.noStroke();
+		for(var i = 0; i < 25; i++)
+		{
+			for(var j = 0; j < 25; j++)
+			{
+				
+				var c = array25x25[i][j];
+				
+				processing.fill(c.r*255, c.g*255, c.b*255);
+				
+				
+				if( (i+3) % 5 == 0 &&  (j+3) % 5 == 0) // big circle
+				{
+					if(table[Math.floor(i/5)][Math.floor(j/5)] == 1)
+						processing.fill(255, 255, 255);
+					else
+						processing.fill(0, 0, 0);
+						
+					processing.ellipse(-boardWidth/2 + i/(25-1)*boardWidth,  -boardHeight/2 + j/(25-1)*boardHeight,  25, 25);
+				} else // small circle
+					processing.ellipse(-boardWidth/2 + i/(25-1)*boardWidth,   -boardHeight/2 + j/(25-1)*boardHeight,  13, 13);
+			}
+		}
+		} else
+		{
+			var pP = BIGPIC;
+			var pS = boardWidth/pP;
+			for(var i = 0; i < pP; i++)
+			{
+				for(var j = 0; j < pP; j++)
+				{
+					var c = arrayBIGxBIG[i][j];
+				
+					processing.fill(c.r*255, c.g*255, c.b*255);
+				
+				
+				//	if( (i+3) % 5 == 0 &&  (j+3) % 5 == 0) // big circle
+					//{
+						//if(table[Math.floor(i/5)][Math.floor(j/5)] == 1)
+							//processing.fill(255, 255, 255);
+						//else
+						//	processing.fill(0, 0, 0);
+						
+						//processing.point((i/pP-0.5)*boardWidth, (j/pP-0.5)*boardHeight);
+						processing.noStroke();
+						processing.rect((i/pP-0.5)*boardWidth, (j/pP-0.5)*boardHeight, pS, pS);
+					//} else // small circle
+						//processing.ellipse(-boardWidth/2 + i/(25-1)*boardWidth,   -boardHeight/2 + j/(25-1)*boardHeight,  13, 13);
+				}
+			}
+		}
+}
+
+
+
+var bezierLooperX= function(N)
+{
+	this.data;
+	this.size ;
+	this.time = 0;
+	var cap = 0;
+	var back = false;
+	
+	this.recalculate = function()
+	{
+		//alert("X");
+		delete this.data[0];
+		delete this.data[1];
+		this.data[0] = this.data[this.size-2];
+		this.data[1] = this.data[this.size-1];
+		for(var i = 2; i < this.size; i++)
+		{
+			this.data[i] =  new vector( Math.random() , Math.random());
+			
+		}
+	}
+	
+	this.get = function(dt)
+	{
+	
+		this.time += dt;
+		if(this.time > 1.0)
+		{
+			this.time = 0;
+			this.recalculate();
+		}
+		
+		var interval = 1/ ( this.size / 2 -1);
+		
+		var p = Math.floor( this.time / interval);
+		
+		var a, b, c, d;
+		
+		a = this.data[2*p];
+		b = this.data[2*p + 1];
+		d = this.data[2*p + 2];
+		var e = this.data[2*p + 3];
+		//alert(p);
+		var dx = e.x - d.x;
+		var dy = e.y - d.y; 
+		c = new vector(d.x - dx, d.y - dy);
+
+		var t = (this.time -  p * interval) / interval;
+		var out = new vector(a.x*(1-t)*(1-t)*(1-t) + 3*b.x*(1-t)*(1-t)*t+3*c.x*(1-t)*t*t+d.x*t*t*t, 
+												a.y*(1-t)*(1-t)*(1-t) + 3*b.y*(1-t)*(1-t)*t+3*c.y*(1-t)*t*t+d.y*t*t*t);
+			
+		delete c;
+		return out;
+		/*return 0;*/
+	}
+	
+	this.generate= function(s)
+	{
+		delete this.data;
+		
+		this.size = s;
+		this.data = new Array();
+		
+		this.data[0] = new vector(0, 0);
+		for(var i = 1; i < this.size; i++)
+		{
+			this.data[i] =  new vector( Math.random()  , Math.random());
+			
+		}
+	}
+	
+	
+	this.generate(N);
+};
+
+var navigatorVezier = new bezierLooperX(8);
+var navigatorVezier2 = new bezierLooperX(8);
+var navigatorVezier3 = new bezierLooperX(8);
+
+
+
+var abc = new Array();
+
+var mx = 0, my = 0;
+var pmx = 0, pmy = 0;
+var dmx = 0, dmy = 0;
+var test = function (toTick, deep, start, dir, timeBegin, timeFull, timeFade) {
+	this.a = new vector(start.x, start.y);
+	this.b = new vector((start.x+dir.x)/2 + width/2 * (Math.random() - 0.5) / (13*deep+1) , (start.y+dir.y)/2+height/2 *(Math.random() - 0.5)/ (13*deep+1));
+	this.c = new vector(dir.x + width/2 *  (Math.random() - 0.5)/ (21*deep+1), dir.y+height/2 *  (Math.random() - 0.5)/ (21*deep+1));
+	this.d = new vector( dir.x,  dir.y);
+	this.T = 0;
+	this.tt = timeBegin + (timeFull- timeBegin)  /  (toTick+1);
+	this.toTick = toTick+1;
+	this.deep = deep;
+	this.maxTick = toTick ;
+	this.numTick = 0;
+	this.prim = deep;
+	this.timeBegin = timeBegin;
+	this.timeFull = timeFull;
+	this.timeFade = timeFade;
+	this.get = function(t)
+	{
+		return new vector( this.a.x*(1-t)*(1-t)*(1-t) + 3*this.b.x*(1-t)*(1-t)*t+3*this.c.x*(1-t)*t*t+this.d.x*t*t*t,
+										this.a.y*(1-t)*(1-t)*(1-t) + 3*this.b.y*(1-t)*(1-t)*t+3*this.c.y*(1-t)*t*t+this.d.y*t*t*t);
+	};
+	this.updateTick = function(time)
+	{
+	//	var time = new Date().getTime();
+		
+		if(time > this.tt)
+		{
+			
+			
+			if(this.deep < 2 && this.numTick < this.maxTick)
+			{
+			//	if(this.deep == 0) 
+				var T = (time - this.timeBegin) / (this.timeFull - this.timeBegin);
+				var T2 = (time + (this.timeFull- this.timeBegin)  /  this.toTick      - this.timeBegin) / (this.timeFull - this.timeBegin);
+				var getT2 = this.get(T2);
+				getT2.x += width/2 * (Math.random() - 0.5)/((this.deep+1)*3);
+				getT2.y += height/2 * (Math.random() - 0.5)/((this.deep+1)*3);
+				//alert(getT2.x.toString()  + " " + getT2.y.toString());
+				this.numTick++;
+				abc.unshift(new test(this.toTick,this.deep+1, this.get(T), getT2 , time, this.timeFade -1000  , this.timeFade
+				
+				));//
+				
+				this.tt = this.tt + (this.timeFull- this.timeBegin)  /  this.toTick;
+				return true;
+			}
+			
+			
+		} 
+		return false;
+	}
+	
+	
+};
+
+//alert(navigatorX.time);
+
+function drawBackground(processing)
+{
+	/*
+	FADE BACKGROUND
+	*/
+		//processing.fill(0, 0, 0, 50);
+		processing.fill(0, 0, 0, 50);
+		processing.rect(-width/2-1, -height/2-1, width+2, height+2);
+		
+		if(stageTwo == false)
+	{
+			
+		
+			var ddx = (-Math.ceil(width/patternSizeX)+(width/patternSizeX)) * patternSizeX +patternSizeX/2 +dmX;
+			var ddy = (-Math.ceil(height/patternSizeY)+(height/patternSizeY)) * patternSizeY+patternSizeY/2+dmY;
+			for(var i = -1 * width / patternSizeX - 3; i < width / patternSizeX+2; i+=2)
+			for(var j = -1 * height / patternSizeY-3; j < height / patternSizeY+2; j+=2)
+			{
+				processing.fill(130, 130, 255);
+				processing.beginShape();
+					processing.vertex(ddx+ i * patternSizeX/2, ddy+ (j+1) * patternSizeY/2);
+					processing.vertex(ddx+ (i+1) * patternSizeX/2,ddy+  (j) * patternSizeY/2);
+					processing.vertex(ddx+ i * patternSizeX/2, ddy+ (j-1) * patternSizeY/2);
+					processing.vertex(ddx+ (i-1) * patternSizeX/2, ddy+ j * patternSizeY/2);
+				processing.endShape(processing.CLOSE);
+			
+				processing.fill(150, 150, 255);
+				processing.beginShape();
+					processing.vertex(ddx+ (i+1) * patternSizeX/2, ddy+ (j+2) * patternSizeY/2);
+					processing.vertex(ddx+ (i+2) * patternSizeX/2, ddy+ (j+1) * patternSizeY/2);
+					processing.vertex(ddx+ (i+1) * patternSizeX/2,ddy+  (j) * patternSizeY/2);
+					processing.vertex(ddx+ (i) * patternSizeX/2, ddy+ (j+1 )* patternSizeY/2);
+				processing.endShape(processing.CLOSE);
+			
+				processing.stroke(180, 180, 255);
+				processing.line(ddx+ i * patternSizeX/2, ddy+ (j+1) * patternSizeY/2, ddx+ (i+1) * patternSizeX/2, ddy+ (j) * patternSizeY/2);
+			}
+		} else
+		{
+		
+		
+		///////////////////////////////////////////////////
+		//
+			for(var i = 0; i < abc.length; i++)
+			{
+				var time = new Date().getTime();
+				
+				var bezierStart = 0;
+				var bezierEnd = 1;
+
+	
+				if(time <= abc[i].timeFull)
+					bezierEnd = (time - abc[i].timeBegin) / (abc[i].timeFull - abc[i].timeBegin);
+				//else bezierEnd = 1.0;
+			
+				if(time > abc[i].timeFull )
+					bezierStart = (time - abc[i].timeFull) / (abc[i].timeFade - abc[i].timeFull);
+			
+				processing.stroke(255, 255, 255);
+				processing.noFill();
+				processing.beginShape();
+			
+				for(var t = bezierStart; t <= bezierEnd; t += 0.05)
+				{
+					var pt = abc[i].get(t);
+				
+				//	processing.ellipse(pt.x, pt.y, 10, 10);
+					processing.vertex(pt.x, pt.y);
+					//alert(pt.x);
+				}
+				var t = bezierEnd;
+				var pt = abc[i].get(t);
+				processing.vertex(pt.x, pt.y);
+				processing.endShape();
+		
+			}
+		}
+
+}
+var clickVector = new vector(width, height);
+var clickVectorSec = new vector(mx - clickVector.x, my - clickVector.y);
+
+var won = false;
+var clickVector2 = new vector(width, height);
+var clickVectorSec2 = new vector(mx - clickVector.x, my - clickVector.y);
+var clickVector3 = new vector(width, height);
+var clickVectorSec3 = new vector(mx - clickVector.x, my - clickVector.y);
+var pressed = false;
+var autoTick = true;
+var timeToAutoTick = 200;
+
+
+var inited = 0;
+var tickStart = new Date().getTime();
+function tmp(processing)
+{
+	if(inited <2)
+	{ 
+		
+		checkAction();
+		processing.redraw();
+		inited++;
+	}
+	
+}
+
+sketch.attachFunction = function(processing) {
+	processing.setup = function() {
+			processing.size(width, height);
+			processing.fill(255);
+			processing.stroke(processing.color(44,48,32));
+			processing.background(0);
+			processing.cursor();
+			if(fancyBackground == false)
+				processing.noLoop();
+			setTimeout( tmp(processing), 500);
+			
+			
+		};
+	processing.draw = function() {
+	
+		var startTimer = new Date(); 
+		processing.fill(50, 50, 50, 255);
+		//processing.rect(-2, -2, width+2, height+2);
+		// Układ współrzędnych. środek
+		processing.translate(processing.width/2.0, processing.height/2.0);
+		// Dodatnie na górze
+		processing.rotate(0);
+		
+	//	if(fancyBackground)
+		{
+			drawBackground(processing);
+		}
+		processing.fill(255);
+		processing.ellipse(processing.mouseX - width/2, processing.mouseY - height/2, 10, 10);
+		
+		
+		drawGame(processing);
+		
+		
+		if(fancyBackground)
+		{
+			//if(stageTwo == false)
+			{
+				var passed = new Date() - startTimer; 
+				var time = new Date().getTime();
+			
+			
+				var dt = passed/1000;
+				dmX +=  10* dt;if(dmX > patternSizeX) dmX = 0; if(dmX < 0) dmX = patternSizeX;//(width/2-processing.mouseX)/100
+				dmY += 10 * dt;if(dmY > patternSizeY) dmY = 0;if(dmY < 0) dmY = patternSizeY;
+			
+				for(var i = abc.length-1; i >= 0; i--)
+				{
+				
+					if(i == abc.length-1 && time > abc[i].timeFade)
+					{
+						abc.pop();
+					} else
+					{
+			
+						if( abc[i].updateTick(time) ) i++;
+					}
+				}
+			} //else 
+			{
+		
+				processing.stroke(50);
+				if(!autoTick && pressed == true)
+				{
+					dmx = processing.mouseX;
+					dmy = processing.mouseY;
+		
+					clickVectorSec.x =  -width/2 + dmx;
+					clickVectorSec.y = -height/2 + dmy;
+					processing.line(-width/2 + mx, -height/2 + my, -width/2 + dmx, -height/2 + dmy);
+				}
+		
+				var time = new Date().getTime();
+				if( autoTick && time > tickStart + timeToAutoTick)
+				{
+				//	alert("XX");
+					tickStart = time;
+			
+					dmx = processing.mouseX;
+					dmy = processing.mouseY;
+					clickVector.x = clickVectorSec.x;
+					clickVector.y = clickVectorSec.y;
+			
+			if(!won){
+			
+					if(processing.mouseX > width/2-275 && processing.mouseX <  width/2+275 &&
+						processing.mouseY > height/2-275 && processing.mouseY <  height/2+275)
+					{
+						var next =  navigatorVezier.get(dt);
+						clickVectorSec.x =  width * (next.x-0.5);
+						clickVectorSec.y =  height * (next.y-0.5);
+					} else
+					{
+						clickVectorSec.x =  -width/2 + mx;
+						clickVectorSec.y = -height/2 + my;
+					}
+					;
+
+			
+					{
+						abc.unshift(new test(4, 0, new vector(clickVector.x , clickVector.y ), new vector(clickVectorSec.x, clickVectorSec.y),time , time + 2000, time + 3000 ));
+						abc[0].b = new vector(clickVectorSec.x, clickVectorSec.y);
+					}
+					
+					{
+					{
+					var next =  navigatorVezier2.get(dt);
+					clickVector2.x = clickVectorSec2.x;
+					clickVector2.y = clickVectorSec2.y;
+					clickVectorSec2.x =  width * (next.x-0.5);
+					clickVectorSec2.y =  height * (next.y-0.5);
+					abc.unshift(new test(4, 0, new vector(clickVector2.x , clickVector2.y ), new vector(clickVectorSec2.x, clickVectorSec2.y),time , time + 2000, time + 3000 ));
+						abc[0].b = new vector(clickVectorSec2.x, clickVectorSec2.y);
+					}
+					{
+					var next =  navigatorVezier3.get(dt);
+					clickVector3.x = clickVectorSec3.x;
+					clickVector3.y = clickVectorSec3.y;
+					clickVectorSec3.x =  width * (next.x-0.5);
+					clickVectorSec3.y =  height * (next.y-0.5);
+					abc.unshift(new test(4, 0, new vector(clickVector3.x , clickVector3.y ), new vector(clickVectorSec3.x, clickVectorSec3.y),time , time + 2000, time + 3000 ));
+						abc[0].b = new vector(clickVectorSec3.x, clickVectorSec3.y);
+					}
+					}
+			}
+				}
+			}
+		
+		}
+	
+	}
+	var goodClick = false;
+	processing.mouseMoved = function() {
+		mx = processing.mouseX;
+		my = processing.mouseY;
+		pmx = processing.pmouseX;
+		pmy = processing.pmouseY;
+		for(var i = 0; i < abc.length; i++)
+		{
+			if(abc[i].prim == 0)
+			{
+				//abc[i].d.x = -width/2 + mx;
+				//abc[i].d.y = -height/2 + my;
+			}
+		}
+	}
+	processing.mousePressed = function()
+	{
+	pressed = true;
+	mx = processing.mouseX;
+		my = processing.mouseY;
+		pmx = processing.pmouseX;
+		pmy = processing.pmouseY;
+	clickVector.x = -width/2 + mx;
+			clickVector.y = -height/2 + my;
+		for(var i = 0; i < 5; i++)
+		{
+			for(var j = 0; j < 5; j++)
+			{
+				var z = new vector(((i/(5-1))*2.0-1.0), 
+													(((j/(5-1))*2.0-1.0)));
+													
+				if(processing.mouseX >(2-i)*boardWidth/25+ width/2 + z.x * boardWidth/2 -12 && 								
+					processing.mouseX <(2-i)*boardWidth/25+ width/2 + z.x * boardWidth/2 +12 && 
+					processing.mouseY >(2-j)*boardHeight/25+ height/2 + z.y * boardHeight/2 -12 && 						
+					processing.mouseY <(2-j)*boardHeight/25+ height/2 + z.y * boardHeight/2 +12
+					)
+					{ 
+					// RELEASE
+					
+						if(processing.mouseButton == processing.LEFT)
+						{
+							if(won) put1(i, j);
+							else
+							{
+								if(stageTwo == false)
+									put1(i, j);
+								else
+									put(i, j);
+								}
+						}
+						
+					
+						goodClick = true;
+					
+					// DEBUG
+						if(processing.mouseButton == processing.RIGHT) put1(i, j); 
+						goodClick = true;
+					}
+					
+			}
+		}
+		//if(clickVector.x == width && 
+		//clickVector.y ==height)
+		//{
+			
+		//}
+		updateArray25x25();
+		if(won) 
+		updateArrayBIGxBIG();
+		
+		
+	}
+	processing.mouseDragged = function()
+	{
+		
+	}
+	processing.mouseReleased = function()
+	{
+		pressed = false;
+		//clickVector.x = mx - clickVector.x;
+		//clickVector.y =  my - clickVector.y;
+		if(goodClick)
+		{
+			if(!won) checkAction();
+			goodClick = false;
+			
+			
+		} else
+		{
+			if(won)
+			{
+			processing.noLoop();;
+			visualKox= !visualKox;
+			}
+		}	
+		if(autoTick== false)
+		{
+		if(processing.mouseButton == processing.LEFT)
+		{
+			var time = new Date().getTime();
+			abc.unshift(new test(2, 0, new vector(clickVector.x , clickVector.y ), new vector(clickVectorSec.x, clickVectorSec.y),time , time + 7000, time + 8000 ));
+		
+		}else abc.pop();
+		}
+		clickVector.x = width;
+		clickVector.y = height;
+		
+		
+		if(fancyBackground == false || won == true)
+			processing.redraw();
+	}
+	processing.keyReleased = function()
+	{
+
+		if(processing.keyCode == 66 )
+		{
+			fancyBackground = !fancyBackground;
+			
+			if(fancyBackground) 
+				processing.loop();
+			else
+				processing.noLoop();
+		}
+		
+	}
+};
+
+
+
+
+
+
+var canvas = document.getElementById("canvas");
+var p =new Processing(canvas, sketch);
+function res()
+{
+	var canvas = document.getElementById('canvas'),
+	context = canvas.getContext('2d');
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	
+	width = canvas.width;
+	height = canvas.height;
+	
+	document.getElementById("disp").style.top=height/2-275;
+	document.getElementById("disp").style.left=width/2-275;
+	document.getElementById("disp").style.zIndex=-1;
+	 // instalacja szkicu
+	if(p !== undefined) p.exit();
+	 	delete p;
+
+	 p = new Processing(canvas, sketch);
+}
+
+</script>
+
+
+</body>
+</html>

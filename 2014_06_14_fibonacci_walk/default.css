@@ -1,0 +1,58 @@
+body
+	{
+		width: 500px;	
+		margin: 35px auto;
+		text-align: justify;
+		font-family: Georgia;
+		font-size: 16px;
+		font-weight: 100;
+	}
+
+	h1#title
+	{
+		text-align: center;
+		margin: 10px 10px;
+		font-size:48px;
+		font-family: Georgia;	
+		font-weight: 300;
+	}
+	h2#desc
+	{
+		text-align: center;
+		font-weight: 300;
+		margin: 10px 10px;
+		font-size:18px;
+	}
+	h3
+	{
+	font-family: Georgia;
+	font-weight: 600;
+	font-size: 18px;
+	}
+	ul{
+		background-color: #FFFFFF;
+	   
+	   
+		padding:10px;
+		padding-bottom: 0px;
+	}
+
+	li{
+		margin-left:10px;
+		margin-bottom:10px;
+	}
+	canvas
+	{
+		border-style:solid;
+		border-width:1px;
+		
+		
+	}
+	
+	#description
+	{
+		color: #555;
+		width: 450px;
+		//float:right;
+		margin: 0 auto;
+	}

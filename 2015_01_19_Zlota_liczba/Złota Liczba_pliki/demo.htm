@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="UTF-8">
+    <style>
+	  html {height: 100%;}
+      body {
+		width: 100% ;
+/* 		height: 100%; */
+        margin: 0px;
+
+        
+/*         display: table; */
+      }
+      #box
+      {
+/* 		display: table-cell; */
+/* 		vertical-align: middle; */
+
+		
+/*  		margin:0px auto; #C77966  */ 
+		
+		background: #703030;
+      }
+      #box2
+      {
+		margin:0px auto;
+/* 		//position: relative; */
+		width: 977px;
+		height: 620px;
+/* 		border: 1px solid #999; */
+      }
+      #box4
+      {
+		color: #FFF;
+		margin:0px auto;
+		text-align: center;
+		
+/* 		position: relative; */
+		width: 977px;
+/* 		height: 89px; */
+/* 		border: 1px solid #999; */
+      }
+
+      #myCanvas {
+		background: #FFF;
+		margin-top: 5px;
+
+      }
+    </style>
+     <script>
+     
+     var th = 2.5079;//3.88322207745093315469;
+      var n = 500;
+      var h = 10.0;
+      var s = 3.5;
+      var d = 4;
+      
+      var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+      
+      
+      function start()
+      {
+		document.getElementById("vn").value = n;
+		document.getElementById("vth").value = th;
+		document.getElementById("vh").value = h;
+		document.getElementById("vs").value = s;
+		document.getElementById("vd").value = d;
+		
+		document.getElementById("rn").value = n;
+		document.getElementById("rth").value = th;
+		document.getElementById("rh").value = h;
+		document.getElementById("rs").value = s;
+		document.getElementById("rd").value = d;
+		changeN();
+		changeTh();
+		changeH();
+		changeS();
+		changeD();
+		
+      };
+      
+     </script>
+     
+     <script>
+	  function changeN()
+	  {
+		n = parseInt(document.getElementById("vn").value) ;
+		 document.getElementById("rn").value = n; 
+		animate();
+		
+	  }
+	   function changeNr()
+	  {
+ 		n = parseInt(document.getElementById("rn").value) ;
+		
+		 document.getElementById("vn").value = n; ;
+		 animate();
+	  }
+	  
+	  function changeTh()
+	  {
+		th = parseFloat(document.getElementById("vth").value) ;
+		document.getElementById("rth").value = th; 
+		animate();
+		
+	  }
+	  function changeThr()
+	  {
+		  th = parseFloat(document.getElementById("rth").value) ;
+		
+		 document.getElementById("vth").value = th; ;
+		 animate();
+		
+	  }
+	  function changeH()
+	  {
+		h = parseFloat(document.getElementById("vh").value) ;
+		document.getElementById("rh").value = h; 
+		animate();
+	  }
+	  
+	   function changeHr()
+	  {
+		  h = parseFloat(document.getElementById("rh").value) ;
+		
+		 document.getElementById("vh").value = h; ;
+		 animate();
+		
+	  }
+	  function changeS()
+	  {
+		
+		s = parseFloat(document.getElementById("vs").value) ;
+		document.getElementById("rs").value = s; 
+		animate();
+	  }
+	  
+	   function changeSr()
+	  {
+		  s = parseFloat(document.getElementById("rs").value) ;
+		
+		 document.getElementById("vs").value = s; ;
+		 animate();
+		
+	  }
+	  
+	  function changeD()
+	  {
+		d = parseFloat(document.getElementById("vd").value) ;
+		//d = parseFloat(document.getElementById("vd").value) ;
+		animate();
+	  }
+     function changeDr()
+	  {
+		  d = parseFloat(document.getElementById("rd").value) ;
+		animate();
+		 document.getElementById("vd").value = d; ;
+		
+	  }
+	  function plusN()
+		{
+		  
+			n = n + Math.round(d);
+			animate();
+			document.getElementById("vn").value = n;
+			document.getElementById("rn").value = n;
+		}
+		function minusN()
+		{
+			n = n -  Math.round(d);
+			animate();
+			document.getElementById("vn").value = n;
+			document.getElementById("rn").value = n;
+		}
+		function plusTh()
+		{
+			th = th + Math.pow(10, -d);
+			animate();
+			document.getElementById("vth").value = th;
+			document.getElementById("rth").value = th;
+		}
+		function minusTh()
+		{
+			th = th -Math.pow(10, -d);
+			if(th < 0 ) th = 0;
+			animate();
+			document.getElementById("vth").value = th;
+			document.getElementById("rth").value = th;
+		}
+		function plusS()
+		{
+			s = s + d;
+			animate();
+			document.getElementById("vs").value = s;
+			document.getElementById("rs").value = s;
+			
+			
+		}
+		function minusS()
+		{
+			s = s - d;
+			animate();
+			if(s < 1 ) s = 1;
+			document.getElementById("vs").value = s;
+			document.getElementById("rs").value = s;
+			
+			
+		}
+		function plusH()
+		{
+			h = h + d;
+			animate();
+			document.getElementById("vh").value = h;
+			document.getElementById("rh").value = h;
+		}
+		function minusH()
+		{
+			h = h - d;
+			if(h < 1 ) h = 1;
+			animate();
+			document.getElementById("vh").value = h;
+			document.getElementById("rh").value = h;
+		}
+		function plusD()
+		{
+			d = d + 1;
+			document.getElementById("vd").value = d;
+			document.getElementById("rd").value = d;
+		}
+		function minusD()
+		{
+			d = d - 1;
+			//if(d < 0 ) d = 0;
+			document.getElementById("vd").value = d;
+			document.getElementById("rd").value = d;
+			//if(d < 0) d = 0;
+
+		}
+     </script>
+  </head>
+  <body onload="start()">
+    <div id="box"> 
+	  <script>
+		  
+		  if(!is_chrome) document.write("<div style= \"text-align: center; color: red\"> Pełna obługa w Google Chrome. W innych przeglądarkach mogą nie działać \"suwaki\".</div>");
+		  
+		</script><div style="text-align: center; color: red"> Pełna obługa w Google Chrome. W innych przeglądarkach mogą nie działać "suwaki".</div>
+	  <div id="box2"> 
+		<canvas id="myCanvas" width="977px" height="610px"></canvas>
+		
+	  </div>
+	  <div id="box4"> 
+		
+		<script>
+		  
+		  if(is_chrome) document.write('<div width = "100%" style = "margin-top: -4px">');
+		  else document.write('<div width = "100%"> ');
+	    </script><div width="100%"> 
+		Θ: <input value="2.5079" id="vth" onchange="changeTh()" type="value">
+				
+				<button onclick="plusTh();return false;">+</button> <button onclick="minusTh();return false;">-</button>
+			  
+				<!-- 3.14159265358979323846 -->
+				
+				<script>
+				  if(is_chrome)
+				  document.write('<input style = "width: 70%;" type="range" id="rth" min="0" step="0.0001" max="6.28318530717958647693" onchange="changeThr()">');
+				</script>
+		</div>
+		<div style="margin: 6  auto; "> 
+		  <div width="50%" style="float: left; width: 50%" "="">
+		  Ilość obiektów:  <input value="500" id="vn" size="4" onchange="changeN()" type="value">
+				  
+				  <button onclick="plusN();return false;">+</button> <button onclick="minusN();return false;">-</button>
+				  
+				  <script>
+					if(is_chrome)
+					document.write('<input style = "width: 40%;" type="range" id="rn" min="1" max="1000" onchange="changeNr()">');
+				  </script>
+		  </div>
+		
+		  <div style="float: right; width: 50%">
+		  Odległość: <input value="10" size="4" id="vh" onchange="changeH()" type="value">
+				  
+				  <button onclick="plusH();return false;">+</button> <button onclick="minusH();return false;">-</button>
+			  
+				  
+				  
+				  <script>
+					if(is_chrome)
+					document.write('<input style = "width: 40%;"  type="range" id="rh" min="1" step="0.1" max="100" onchange="changeHr()">');
+				  </script>
+		  </div>
+		</div>
+		
+		 <div style="margin: 0  auto;"> 
+		  <div width="50%" style="float: left; width: 50%">
+		 Rozmiar obiektu: <input value="3.5" size="4" id="vs" onchange="changeS()" type="value">
+				
+				<button onclick="plusS();return false;">+</button> <button onclick="minusS();return false;">-</button>
+			
+				<script>
+				  if(is_chrome)
+				  document.write('<input style = "width: 40%;" type="range" id="rs" min="1" step="0.5" max="20" onchange="changeSr()">');
+				</script>
+		  </div>
+		
+		  <div style="float: right; width: 50%">
+		  D(Wielkość zmian): <input value="4" id="vd" size="4" onchange="changeD()" type="value">
+				
+				<button onclick="plusD();return false;">+</button> <button onclick="minusD();return false;">-</button>
+				
+				
+				
+				<script>
+				  if(is_chrome)
+				  document.write('<input  style = "width: 20%;" type="range" id="rd" min="-18" step="0.01" max="18" onchange="changeDr()">');
+				</script>
+		  </div>
+		  
+		 
+		</div> 
+		  
+		  
+		  <table>
+			<tbody><tr>
+			  <td>
+				
+			  </td>
+			  
+			 
+			  <td>
+				
+				
+			  </td>
+			  
+			  <td>
+				
+				
+			  </td>
+			  
+			  <td>
+				
+			  </td>
+			  
+			  
+			  
+			</tr></tbody></table>
+		  
+	  </div>
+	  
+    </div>
+    
+    <script>
+    
+
+		
+      
+      function animate()
+      {
+      
+		 
+		var canvas = document.getElementById('myCanvas');
+		var context = canvas.getContext('2d');
+	   
+		var centerX = canvas.width / 2;
+		var centerY = canvas.height / 2;
+
+		context.save();
+context.setTransform(1, 0, 0, 1, 0, 0);
+// Will always clear the right space
+context.clearRect(0, 0, canvas.width, canvas.height);
+context.restore();
+		
+		var alfa = 0;
+		var nn= n + 2;
+		//s*=10;
+		for (var i=2;i<nn;i++)
+		{
+		  context.beginPath();
+		  context.lineWidth = 2;
+		  
+		  var r = Math.sqrt(i) * h - h;
+		  var xx = centerX + Math.sin(alfa) * r;
+		  var yy = centerY + Math.cos(alfa) * r;
+		  
+		  context.arc( xx , yy, s, 0 , 2 * Math.PI, false);
+		  
+		  context.fillStyle = '#EB78FF';
+		  context.fill();
+		  context.lineWidth = Math.sqrt(s)/2;
+		  context.strokeStyle = '#8F00A8';
+		
+		
+		  context.stroke();
+		  
+		  alfa += th;
+		}
+		
+		
+      }
+      animate();
+     // start();
+      
+      
+    </script>
+  
+
+</body></html>

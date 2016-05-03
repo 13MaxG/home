@@ -1,0 +1,42 @@
+<html>
+<head>
+	<meta charset="utf-8"> 
+	<script src="processing.js"></script>
+	<script src="tools.js"></script>
+	<script src="life.js"></script>
+	<title> Gra w Życie </title>
+	<link href="default.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<h1 id="title"> Gra w Życie </h1>
+	<h2 id="desc"> Andrzej Golonka 2014</h2>
+	
+	 
+	 <p>
+	 <canvas id="board" width="500" height="500"></canvas>
+	 <script id="script" type="text/javascript">	
+	 	var canvas = document.getElementById("board"); 
+		var p = new Processing(canvas, gameOfLife); 
+	 </script>
+	 </p>
+	 
+	<!-- <div id="description"> -->
+	<h3> Wyjaśnienie do aplikacji</h3>
+	<p>
+		Gra w życie według standardowych zasach.
+	</p>
+	<p>
+		LPM - ożywianie/zabijanie pól;
+	</p>
+	<p>	PPM -  start/stop czasu;</p>
+	<p>	'A' - zamiast pól z żyjątkami pokaż statystykę. Każde pole ma kolor w odcieniach szarości. Im ciemniejsze, tym częściej żyjątka żyły na tym polu. Po każdym kroku algorytmu żyjątka podbijają stastystykę pola o 1. Kolorowanie odbywa się na podstawie stosunku aktualnej statystyki pola do maksymalnej statystyki w całej planszy.</p>
+	<p>	'B' - losuj pola</p>
+	<p>	'C' - pokaż siatkę</p>
+	<p>	'N'/'M' - zwiększanie/zmiejszanie ilości pól</p>
+	<hr />
+	<p>Ag 30.3.2014</p>
+	<!-- </div>-->
+	
+</div>
+</body>
+</html>
