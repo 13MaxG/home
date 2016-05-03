@@ -1,0 +1,410 @@
+<html>
+<head>
+	<title>logic!</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF8">
+	<script src="./processing.min.js"></script>
+</head>
+<body style="width:100%; height:100%;margin:0; padding:0;" onload="res()" onresize="res()">
+
+<canvas style=" position: relative;
+  top: 50%;-webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);margin: 0 auto; border: 1px solid black;display: block; image-rendering: -webkit-optimize-contrast !important; " id="canvas" tabindex="0" width="500" height="500"></canvas>
+
+
+<script id="script" type="text/javascript">
+var width = 250, height=250;
+var sketch = new Processing.Sketch();
+	
+
+
+
+var MATH = MATH || {};
+
+MATH.Vec3 = function(x, y, z)
+{
+	this.x = x;
+	this.y = y;
+	this.z = z;
+}
+MATH.Vec3.prototype = 
+{
+	len2: function()
+	{
+		return this.x*this.x + this.y*this.y + this.z*this.z;
+	},
+	len: function()
+	{
+		return Math.sqrt(this.len2());
+	},
+	norm: function()
+	{
+		var norm = new MATH.Vec3(this.x, this.y, this.z);
+		var nor2 = this.len2();
+		if(nor2 > 0)
+		{
+			var inv = 1.0 / Math.sqrt(nor2);
+			norm.x = norm.x * inv;
+			norm.y = norm.y * inv;
+			norm.z = norm.z * inv;
+		}
+
+		return norm;
+	}
+};
+MATH.dot = function(a, b)
+{
+	return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+MATH.Sphere = function(pos, r, sc, ec, t, re)
+{
+	this.pos = pos; // Position of center
+	this.r = r; // Raidus
+	this.sc = sc; // Surface color
+	this.ec = ec; // Emission color
+	this.t = t; // Transparency
+	this.re = re; // Reflection
+	this.r2 = r*r;
+	
+	
+}
+MATH.Sphere.prototype = 
+{
+/* *** LOVELY FUNCTION *** <3<3<3*/
+	intersect: function(origin, dir)
+	{
+		var l = new MATH.Vec3(this.pos.x - origin.x, this.pos.y - origin.y, this.pos.z - origin.z);
+		var tca =  MATH.dot(l, dir);
+		if(tca < 0) return [false, 0, 0];
+
+		var d2 = MATH.dot(l, l) - tca*tca;
+		if(d2 > this.r2) return [false, 0, 0];
+				
+		var thc = Math.sqrt(this.r * this.r - d2);
+		
+	
+		
+		return [true, tca-thc, tca+thc];
+	}
+}
+
+//var X = new MATH.Sphere(new MATH.Vec3(0, 0, 0), 0.1, new MATH.Vec3(0, 1, 0), new MATH.Vec3(0.1, 0.1, 0.2), 0.5, 0.5);
+//alert(X.intersect(new MATH.Vec3(1, 1, 0), new MATH.Vec3(-1, -1, 0)));
+
+MATH.MAX_DEPTH = 5;
+
+MATH.mix = function(a, b, mix)
+{
+	return b * mix + a * (1-mix);
+};
+MATH.INF = 1e8;
+MATH.trace = function(origin, dir, obj, d)
+{
+	var tnear = MATH.INF;
+	var snear = -1;
+	
+	
+			
+	for(var i = 0; i < obj.length; i++)
+	{
+		var t0 = MATH.INF;
+		var t1 = MATH.INF;
+		
+		var intersection = obj[i].intersect(origin, dir);
+	
+		if(intersection[0])
+		{
+			t0 = intersection[1];
+			t1 = intersection[2];
+			if(t0 < 0) t0 = t1;
+			if(t0 < tnear)
+			{
+				tnear = t0;
+				snear = i;
+					
+			}
+		}
+	}
+	
+	if(snear == -1) return new MATH.Vec3(2.0, 2.0, 2.0);
+	
+	var sc = new MATH.Vec3(0, 0, 0); // surface color
+	// Punkt przecięcia
+	var phit =  new MATH.Vec3(  origin.x + (dir.x * tnear),
+								origin.y + (dir.y * tnear),
+								origin.z + (dir.z * tnear));
+	// Normalna do punktu przeciecia
+	var nhit = new MATH.Vec3(   phit.x - obj[snear].pos.x,
+								phit.y - obj[snear].pos.y,
+								phit.z - obj[snear].pos.z);
+	nhit = nhit.norm();
+	
+	var bias = 1e-4;
+	var inside = false;
+	
+	if(MATH.dot(dir, nhit) > 0)
+	{
+		nhit.x = -nhit.x; nhit.y = -nhit.y; nhit.z = -nhit.z;
+		inside = true;
+	}
+	if( (obj[snear].t > 0 || obj[snear].re > 0) && d < MATH.MAX_DEPTH)
+	{
+		// Współczynnik mieszania
+		var facing_ratio = -1.0 * MATH.dot(dir, nhit);
+		var fresnel_effect = MATH.mix(Math.pow(1.0 - facing_ratio, 3), 1, 0.1);
+		
+		// Kierunek odbicia
+		var dot_tmp = MATH.dot(dir, nhit);
+		var reflection_dir = new MATH.Vec3(
+			dir.x - nhit.x * 2.0 * dot_tmp, 
+			dir.y - nhit.y * 2.0 * dot_tmp,
+			dir.z - nhit.z * 2.0 * dot_tmp
+		);
+	
+		// Normalizacja do długośći 1
+		reflection_dir = reflection_dir.norm();
+		
+		var reflection = MATH.trace( 
+			new MATH.Vec3(phit.x + nhit.x * bias, phit.y + nhit.y * bias, phit.z + nhit.z * bias),
+			reflection_dir, obj, d+1);
+			
+		
+		
+		var refractioin = new MATH.Vec3(0, 0, 0);
+		
+		// Transparency
+		if(obj[snear].t > 0)
+		{
+			var ior = 1.1;
+			var eta; if(inside == true) eta =  ior; else eta  =  1.0 / ior; // czy wewnątrz
+			var eta; if(inside == true) eta =  ior; else eta  =  1.0 / ior; // czy wewnątrz
+			
+			var cosi = -1.0 * MATH.dot(nhit, dir);
+			var k = 1.0 - eta * eta * (1-cosi * cosi);
+			
+
+			var refrdir = new MATH.Vec3(dir.x * eta + nhit.x * (eta * cosi - Math.sqrt(k)),
+				dir.y * eta + nhit.y * (eta * cosi - Math.sqrt(k)),
+				dir.z * eta + nhit.z * (eta * cosi - Math.sqrt(k)));
+			refrdir = refrdir.norm();
+			
+			refractioin = MATH.trace( new MATH.Vec3(phit.x - nhit.x * bias, phit.y - nhit.y * bias,  phit.z - nhit.z * bias  ),refrdir, obj, d+1);
+			
+		}
+		// #Transparency
+	//	console.log(reflection.x , fresnel_effect , refractioin , (1 - fresnel_effect) , obj[snear].t , obj[snear].sc.x);
+		sc.x = (reflection.x * fresnel_effect + refractioin.x * (1 - fresnel_effect) * obj[snear].t) * obj[snear].sc.x; 
+		sc.y = (reflection.y * fresnel_effect + refractioin.y * (1 - fresnel_effect) * obj[snear].t) * obj[snear].sc.y; 
+		sc.z = (reflection.z * fresnel_effect + refractioin.z * (1 - fresnel_effect) * obj[snear].t) * obj[snear].sc.z; 
+		
+		//if(d == 0){
+		//console.log(reflection.x , fresnel_effect , refractioin , (1 - fresnel_effect),  obj[snear].t,  obj[snear].sc.x );
+		//console.log(sc);		
+		//}
+						
+	} else
+	{
+		for(var i = 0; i < obj.length; i++)
+		{
+			if(obj[i].ec.x > 0)
+			{
+				var transmission = new MATH.Vec3(1, 1, 1);
+				var lightDir = new MATH.Vec3(obj[i].pos.x - phit.x, obj[i].pos.y - phit.y, obj[i].pos.z - phit.z);
+				lightDir = lightDir.norm();
+				
+				for(var j = 0; j < obj.length; j++)
+				{
+					if(i != j)
+					{
+						
+						var intersection = obj[j].intersect(new MATH.Vec3( phit.x + nhit.x * bias, phit.y + nhit.y * bias, phit.z + nhit.z * bias ), lightDir);
+						
+						if(intersection[0] == true)
+						{
+							var transmission = new MATH.Vec3(0, 0, 0);
+							break;
+						}
+					}
+				}
+				
+				
+				var tmp  = Math.max(0, MATH.dot(nhit, lightDir))
+				sc.x += obj[i].sc.x * transmission.x * obj[i].ec.x * tmp;
+				sc.y += obj[i].sc.y * transmission.y * obj[i].ec.y * tmp;
+				sc.z += obj[i].sc.z * transmission.z * obj[i].ec.z * tmp;
+				
+			}
+		}
+	}
+	//if(obj[snear].ec.x != 0) console.log(obj[snear].ec);
+	
+	
+	
+	var out = new MATH.Vec3(sc.x + obj[snear].ec.x, 
+		sc.y + obj[snear].ec.y, 
+		sc.z + obj[snear].ec.z 
+	);
+	
+	return out;
+}
+/*
+
+MATH.Sphere = function(pos, r, sc, ec, t, re)
+{
+	this.pos = pos; // Position of center
+	this.r = r; // Raidus
+	this.sc = sc; // Surface color
+	this.ec = ec; // Emission color
+	this.t = t; // Transparency
+	this.re = re; // Reflection
+	this.r2 = r*r;
+}
+
+const Vec3f &c,
+const float &r,
+const Vec3f &sc,
+const float &refl = 0,
+const float &transp = 0,
+const Vec3f &ec = 0
+ spheres.push_back(Sphere(Vec3f( 0.0, -10004, -20), 10000, Vec3f(0.20, 0.20, 0.20), 0, 0.0));
+spheres.push_back(Sphere(Vec3f( 0.0, 0, -20), 4, Vec3f(1.00, 0.32, 0.36), 1, 0.5));
+spheres.push_back(Sphere(Vec3f( 5.0, -1, -15), 2, Vec3f(0.90, 0.76, 0.46), 1, 0.0));
+spheres.push_back(Sphere(Vec3f( 5.0, 0, -25), 3, Vec3f(0.65, 0.77, 0.97), 1, 0.0));
+spheres.push_back(Sphere(Vec3f(-5.5, 0, -15), 3, Vec3f(0.90, 0.90, 0.90), 1, 0.0));
+// light
+spheres.push_back(Sphere(Vec3f( 0.0, 20, -30), 3, Vec3f(0.00, 0.00, 0.00), 0, 0.0, Vec3f(3)));
+*/
+
+var obj = new Array(6);
+obj[0] = new MATH.Sphere(new MATH.Vec3(0.0, -10004, -20), 10000, new MATH.Vec3(0.20, 0.20, 0.20), new MATH.Vec3(0.0, 0.0, 0.0), 0, 1.0);
+obj[1] = new MATH.Sphere(new MATH.Vec3(0.0, 0, -20), 4, new MATH.Vec3(1.00, 0.32, 0.36), new MATH.Vec3(0.0, 0.0, 0.0), 0.5, 1.0);
+obj[2] = new MATH.Sphere(new MATH.Vec3(5.0, -1, -15), 2, new MATH.Vec3(0.90, 0.76, 0.46), new MATH.Vec3(0.0, 0.0, 0.0), 0, 1.0);
+obj[3] = new MATH.Sphere(new MATH.Vec3(5.0, 0, -25), 3, new MATH.Vec3(0.65, 0.77, 0.97), new MATH.Vec3(0.0, 0.0, 0.0), 0, 1.0);
+obj[4] = new MATH.Sphere(new MATH.Vec3(-5.5, 0, -15), 3, new MATH.Vec3(0.90, 0.90, 0.90), new MATH.Vec3(0.0, 0.0, 0.0), 0, 1.0);
+
+obj[5] = new MATH.Sphere(new MATH.Vec3(0.0, 20, -30), 3, new MATH.Vec3(0.00, 0.00, 0.00), new MATH.Vec3(3.0, 3.0, 3.0), 0, 0.0);
+
+
+
+var PPF = 250;
+var fov = 30;
+var invWidth = 1.0/width;
+var invHeight = 1.0/height;
+var aspectratio = width / height;
+var angle = Math.tan(Math.PI * 0.5 * fov / 180.0);
+
+var NUM = 0;
+var IND = 1;
+sketch.attachFunction = function(processing) {
+	processing.setup = function() {
+			processing.size(width, height);
+		//	processing.smooth();
+			processing.fill(255);
+			processing.stroke(processing.color(44,48,32));
+			processing.background(0);
+			processing.cursor()
+			//processing.frameRate(60);
+		};
+	processing.draw = function() {
+		//processing.fill(255, 255, 255, 255);
+		//processing.rect(-2, -2, width+2, height+2);
+		
+		
+		// Układ współrzędnych. środek
+		//processing.translate(processing.width/2.0, processing.height/2.0);
+		// Dodatnie na górze
+		//processing.rotate(-processing.PI/2.0);
+		
+		for(var i = 0; i < PPF; i++)
+		
+		//for(var x = 0; x < width;x++)
+		//for(var y = 0; y < height;y++)
+		{
+			NUM++;
+			var x = (Math.random() ) * width;
+			var y = (Math.random()  ) * height;
+			
+			var xx = (2.0 * ( (x+0.5) * invWidth  ) - 1  ) * angle * aspectratio;
+			var yy = (1.0 - 2.0 * ((y + 0.5) * invHeight)) * angle;
+			
+			var ray = new MATH.Vec3(xx, yy, -1);
+			ray = ray.norm();
+			
+			
+			var pixel = MATH.trace(new MATH.Vec3(0, 0, 0), ray, obj, 0);
+			
+			processing.stroke(
+				pixel.x * 255,
+				pixel.y * 255, 
+				pixel.z * 255
+			);
+			if(NUM < 2500)processing.strokeWeight(10);
+			else processing.strokeWeight(2);
+			
+			processing.point(x, y);
+		}
+		
+		
+	
+	}
+	processing.mouseMoved = function() {
+	
+	}
+	processing.mousePressed = function()
+	{
+		//if(processing.mouseButton == processing.LEFT)
+		
+	}
+	processing.mouseReleased = function()
+	{
+		//if(processing.mouseButton == processing.RIGHT)
+	}
+	
+	processing.keyReleased = function()
+	{
+		if(processing.keyCode == processing.UP) obj[IND].pos.z += 1;
+		if(processing.keyCode == processing.DOWN) obj[IND].pos.z -= 1;
+		if(processing.keyCode == processing.LEFT) obj[IND].pos.x += 1;
+		if(processing.keyCode == processing.RIGHT) obj[IND].pos.x -= 1;
+		
+		if(processing.key == 48) IND = 0;
+		if(processing.key == 49) IND = 1;
+		if(processing.key == 50) IND = 2;
+		if(processing.key == 51) IND = 3;
+		if(processing.key == 52) IND = 4;
+		if(processing.key == 53) 
+
+		alert(IND);
+		NUM = 0;
+		processing.fill(255, 255, 255, 255);
+		processing.rect(-2, -2, width+2, height+2);
+	}
+};
+
+
+
+var canvas = document.getElementById("canvas");
+var p =new Processing(canvas, sketch);
+function res()
+{
+	var canvas = document.getElementById('canvas'),
+	context = canvas.getContext('2d');
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	
+	//width = canvas.width;
+	//height = canvas.height;
+
+	 // instalacja szkicu
+	if(p !== undefined) p.exit();
+	 	delete p;
+
+	 p = new Processing(canvas, sketch);
+}
+
+</script>
+Keys: 0, 1, 2, 3, 4, 5 - balls; Arrows - change position of selected ball;
+<a href="http://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-ray-tracing/raytracing-algorithm-in-a-nutshell"> by this </a>	
+</body>
+</html>
